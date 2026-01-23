@@ -9,6 +9,15 @@ const KEY_WORDS = {
   FUNCTION: "FUNCTION",
 } as const;
 
+// 运算符优先级表
+export const priorityTable = [
+  ["&", "|", "^"],
+  ["==", "!=", ">", "<", ">=", "<="],
+  ["+", "-"],
+  ["*", "/"],
+  ["<<", ">>"],
+];
+
 export type KEY_WORDS = (typeof KEY_WORDS)[keyof typeof KEY_WORDS];
 
 export default KEY_WORDS;

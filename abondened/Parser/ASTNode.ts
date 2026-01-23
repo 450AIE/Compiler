@@ -16,7 +16,7 @@ export type ASTNODE_TYPE = (typeof ASTNODE_TYPE)[keyof typeof ASTNODE_TYPE];
 class ASTNode {
   children: ASTNode[] = [];
   parent: ASTNode | null = null;
-  type: ASTNODE_TYPE;
+  type?: ASTNODE_TYPE;
   label: string | null = null;
   lexeme: string | null = null;
   constructor({
@@ -26,7 +26,7 @@ class ASTNode {
     lexeme = null,
   }: {
     parent: ASTNode | null;
-    type: ASTNODE_TYPE;
+    type?: ASTNODE_TYPE;
     label: string | null;
     lexeme?: string | null;
   }) {

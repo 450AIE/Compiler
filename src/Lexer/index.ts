@@ -1,61 +1,43 @@
-// @ts-nocheck
-import AlphabetChecker from "../AlphabetChecker";
-import PeekIterator from "../PeekIterator";
-import Token, { TokenType } from "../Token";
+import AlphabetChecker from "./AlphabetChecker";
+import { TokenType } from "./consts";
+import PeekIterator from "./PeekIterator";
+import Token from "./Token";
 
-/**
- * 词法分析器
- */
 class Lexer {
-  analyze(source) {
-    const tokens: Token[] = [];
-    const iterator = new PeekIterator(source, "\0");
+  static parse(codeSource: string) {
+    const tokens = [];
+    const iterator = new PeekIterator(codeSource);
+    // 然后开始while循环到读取字符，进行Token拆分
     while (iterator.hasNext()) {
-      const char = iterator.next();
-      // 遇到结束符，break
-      if (char === "\0") break;
-      const lookahead = iterator.peek();
-      // 忽略空格和换行符
-      if ([" ", "\n"].includes(char)) continue;
-      // 处理括号
-      if (["(", ")", "{", "}", "[", "]"].includes(char)) {
-        tokens.push(new Token(TokenType.BRACKET, char));
-        continue;
-      }
       /**
-       * 以下处理的时候都要putBack是因为内部makeXXX函数也要使用该next吞掉的第一个字符，所以要
-       * putBack一下，确保makeXXX函数可以读取这第一个字符
+       * 理论上说，只需要看一个字符就可以知道该字符应该使用Token.makeXXX了，但是对于+5，-6这种带符号的数字，无法确定，
+       * 于是需要向前阅读2个字符来确定是操作符还是带符号的数字，我这里不做，因为改动有点大
        */
-      // 处理字符串
-      if (['"', "'"].includes(char)) {
-        iterator.putBack();
-        tokens.push(Token.makeString(iterator));
+      const char = iterator.peek();
+      if (char === TokenType.EOF) break;
+      // 空格，换行就略过，并且吃掉
+      if ([" ", "\n"].includes(char)) {
+        iterator.next();
         continue;
       }
-      // 处理变量或关键字
-      if (AlphabetChecker.isLetter(char)) {
-        iterator.putBack();
-        tokens.push(Token.makeVarOrKeyword(iterator));
-        continue;
-      }
-      // 处理含有+或-前缀的数字
-      if (["-", "+"].includes(char) && AlphabetChecker.isNumber(lookahead)) {
-        const lastToken = tokens[tokens.length - 1];
-        // 只有前一个token不是数字，才会是一个新的数字，如果前一个token是数字，那么可能就是 5 + 5这种，如果前一个token不是数字,
-        // 那么可能就是 a + +5 这种，这个前缀表示正负号
-        if (lastToken == null || !lastToken.isNumber()) {
-          iterator.putBack();
-          tokens.push(Token.makeNumber(iterator));
-          continue;
-        }
-      }
-      // 处理运算符
-      if (AlphabetChecker.isOperator(char)) {
-        iterator.putBack();
+      // 括号
+      if (["(", ")", "[", "]", "{", "}"].includes(char)) {
+        iterator.next();
+        tokens.push(new Token(TokenType.BRACKET, char));
+        // 是数字
+      } else if (AlphabetChecker.isNumber(char)) {
+        tokens.push(Token.makeNumber(iterator));
+        // 是操作符
+      } else if (AlphabetChecker.isOperator(char)) {
         tokens.push(Token.makeOperator(iterator));
-        continue;
+        // 检查是否是单个字符
+      } else if (AlphabetChecker.isLetter(char)) {
+        tokens.push(Token.makeVariableOrKeyword(iterator));
+      } else if (["'", '"'].includes(char)) {
+        tokens.push(Token.makeString(iterator));
+      } else {
+        throw new Error(`Unknown token: ${char}`);
       }
-      throw new LexerError(`Unknown token: ${char}`);
     }
     return tokens;
   }
