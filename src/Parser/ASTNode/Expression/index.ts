@@ -13,7 +13,7 @@ class Expression extends ASTNode {
     });
   }
   /**
-   * prattParse算法，解析表达式
+   * prattParse算法，解析表达式。看不懂的话自己举例 a + b * 2 * c + a / 4
    */
   static parse(iterator: PeekTokenIterator) {
     const expression = new Expression({ label: null });
@@ -27,7 +27,7 @@ class Expression extends ASTNode {
     let leftNumFactorNode = Factor.parseToken(leftNumToken);
     const type = leftNumToken.getType();
     const value = leftNumToken.getValue();
-    // 遇到左括号需要特殊处理
+    // 遇到左括号需要特殊处理，括号内的空间单独处理完毕后，作为leftNumFactorNode
     if (type === TokenType.BRACKET && value === "(") {
       leftNumFactorNode = Expression.prattParse(iterator, 0);
       // 下面while内遇到）直接break了，所以这里next消费掉是）或者EOF，如果是EOF，那么就缺失右括号
@@ -60,6 +60,10 @@ class Expression extends ASTNode {
       // 拼接为AST
       opASTNode.addChild(leftNumFactorNode);
       opASTNode.addChild(rightNumNode);
+      /**
+       * 在while中的话，每次这个leftNumFactorNode都变为了opASTNode，所以在break后return出去，外面的Expression.prattParse递归接收到的
+       * 是opASTNode，即rightNumNode也是操作符节点，所以没问题。看不懂的话自己举例 a + b * 2 * c + a / 4
+       */
       leftNumFactorNode = opASTNode;
     }
     return leftNumFactorNode;
