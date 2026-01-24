@@ -1,17 +1,18 @@
 import { TokenType } from "../consts";
+import Token from "../Token";
 
 /**
  * 封装一个支持peek操作的迭代器
  */
-class PeekIterator {
-  private iterator: Iterator<string, undefined>;
+class PeekIterator<T = string> {
+  private iterator: Iterator<T, undefined>;
   // 调用peek后，将读取的元素放入peekedQueue，链表性能更好，为了简单这里用数组
   private peekedQueue: string[];
   // 调用next后，将读取的元素放入nextedQueue
   private nextedQueue: string[];
   public isDone: boolean;
   // 接收字符串进行迭代
-  constructor(string: Iterable<string>) {
+  constructor(string: Iterable<T>) {
     this.iterator = string[Symbol.iterator]();
     this.peekedQueue = [];
     this.nextedQueue = [];
