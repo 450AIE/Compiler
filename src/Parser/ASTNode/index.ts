@@ -1,10 +1,11 @@
+import Token from "../../Lexer/Token";
 import { ASTNODE_TYPE } from "../consts";
 
 export interface ASTNodeProps {
   parent?: ASTNode | null;
   type?: ASTNODE_TYPE;
   label: string | null;
-  lexme?: string | null;
+  lexme?: Token | null;
 }
 
 class ASTNode {
@@ -12,7 +13,7 @@ class ASTNode {
   public parent?: ASTNode | null;
   public type?: ASTNODE_TYPE;
   public label: string | null;
-  public lexme: string | null;
+  public lexme: Token | null;
   constructor({ parent, type, label, lexme }: ASTNodeProps) {
     this.children = [];
     this.parent = parent ?? null;

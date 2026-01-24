@@ -1,14 +1,13 @@
-import Factor from "..";
-
-import { ASTNodeProps } from "../..";
+import ASTNode, { ASTNodeProps } from "../..";
 
 import { ASTNODE_TYPE } from "../../../consts";
 
-class Scalar extends Factor {
-  constructor({ label }: ASTNodeProps) {
+class Scalar extends ASTNode {
+  constructor({ label, lexme }: ASTNodeProps) {
     super({
       type: ASTNODE_TYPE.SCALAR,
       label,
+      lexme,
     });
   }
 }

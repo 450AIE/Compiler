@@ -9,6 +9,16 @@ class Token {
     this.type = type;
     this.value = value;
   }
+  getType() {
+    return this.type;
+  }
+  getValue() {
+    return this.value;
+  }
+  static isScalar(type: TokenType) {
+    // @ts-expect-error
+    return [TokenType.NUMBER, TokenType.STRING, TokenType.BOOLEAN, TokenType.NULL].includes(type);
+  }
   /**
    * 以下的makeXXX方法都是接收迭代器，然后进行往后面进行迭代读取字符解析为XXX。
    * 前提条件：如果调用makeXXX，那么接下来的字符串必须就是XXX类型的，所以需要Lexer外部进行

@@ -10,6 +10,16 @@ export const ASTNODE_TYPE = {
   ASSIGN_STATEMENT: "ASSIGN_STATEMENT",
   FUNCTION_DECLARE_STATEMENT: "FUNCTION_DECLARE_STATEMENT",
   SCALAR: "SCALAR",
+  PROGRAM: "PROGRAM",
 } as const;
 
 export type ASTNODE_TYPE = (typeof ASTNODE_TYPE)[keyof typeof ASTNODE_TYPE];
+
+export const OPERATOR_BINDING_POWER = {
+  "+": [10, 11],
+  "-": [10, 11],
+  "*": [20, 21],
+  "/": [20, 21],
+} as const;
+
+export type OPERATOR_BINDING_POWER = (typeof OPERATOR_BINDING_POWER)[keyof typeof OPERATOR_BINDING_POWER];

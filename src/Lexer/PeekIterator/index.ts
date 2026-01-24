@@ -7,9 +7,9 @@ import Token from "../Token";
 class PeekIterator<T = string> {
   private iterator: Iterator<T, undefined>;
   // 调用peek后，将读取的元素放入peekedQueue，链表性能更好，为了简单这里用数组
-  private peekedQueue: string[];
+  private peekedQueue: (T | "EOF")[];
   // 调用next后，将读取的元素放入nextedQueue
-  private nextedQueue: string[];
+  private nextedQueue: (T | "EOF")[];
   public isDone: boolean;
   // 接收字符串进行迭代
   constructor(string: Iterable<T>) {
@@ -19,7 +19,7 @@ class PeekIterator<T = string> {
     this.isDone = false;
   }
   // 查看将要迭代吃掉的下一个元素
-  peek() {
+  peek(): T | "EOF" {
     if (this.peekedQueue.length) {
       return this.peekedQueue[this.peekedQueue.length - 1];
     }
@@ -28,7 +28,7 @@ class PeekIterator<T = string> {
     return val;
   }
   // 迭代吃掉下一个元素
-  next() {
+  next(): T | "EOF" {
     let value = undefined;
     // 优先消耗之前peek的时候调用next保存的值
     if (this.peekedQueue.length) {
@@ -46,9 +46,14 @@ class PeekIterator<T = string> {
     this.nextedQueue.push(value);
     return value;
   }
-  // 将刚刚next读取的字符放到peekQueue中
+  // 将刚刚next读取的字符放到peekQueue尾部中
   putBack() {
     this.peekedQueue.push(this.nextedQueue.pop());
+  }
+  // 将刚刚next读取的字符放到peekQueue头部中，用于next + peek查看两个元素判断的时候调用unget保证第一次next消费的元素在下次
+  // next还可以正常消费读取
+  unget() {
+    this.peekedQueue.unshift(this.nextedQueue.pop());
   }
   // 见刚刚next读取的字符放到peekQueue的头部，让下一次next可以直接再次消费这个元素，主要是用于
   // Lexer的parse的while循环中，已经next消费了一个 + peek又查看了一个，接下来调用Token.makeXXXX时

@@ -10,7 +10,7 @@ class PeekTokenIterator extends PeekIterator<Token> {
     super(tokens);
   }
   // 预期吃掉下一个值为Value的Token
-  nextTokenMatchByValue(value: TokenType | KEYWORD_TYPE | OPERATOR_TYPE) {
+  nextTokenMatchByValue(value: string) {
     const token = this.next();
     if (token === TokenType.EOF) {
       throw new Error("Unexpected Error EOF");
