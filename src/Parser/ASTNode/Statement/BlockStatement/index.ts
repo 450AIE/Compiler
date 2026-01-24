@@ -12,10 +12,11 @@ class BlockStatement extends Statement {
   }
   /**
    * block即先吃掉{，最后吃掉}，中间不断去解析statement
+   * 如果是Program调用的就不需要{}，毕竟文件首尾也不需要括号
    */
-  static parse(iterator: PeekTokenIterator) {
+  static parse(iterator: PeekTokenIterator, isRunByProgram: boolean = false) {
     const block = new BlockStatement({ label: null });
-    iterator.nextTokenMatchByValue("{");
+    if (!isRunByProgram) iterator.nextTokenMatchByValue("{");
     while (iterator.hasNext()) {
       // statement.parse内部会判断下一个语句是if，for，while还是什么进行分发处理
       const statement = Statement.parse(iterator);
@@ -23,7 +24,7 @@ class BlockStatement extends Statement {
       if (!statement) break;
       block.addChild(statement);
     }
-    iterator.nextTokenMatchByValue("}");
+    if (!isRunByProgram) iterator.nextTokenMatchByValue("}");
     return block;
   }
 }

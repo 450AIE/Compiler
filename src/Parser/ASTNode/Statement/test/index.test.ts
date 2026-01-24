@@ -37,6 +37,8 @@ describe("Statement.parse", () => {
       new Token(TokenType.BRACKET, "("),
       new Token(TokenType.VARIABLE, "x"),
       new Token(TokenType.BRACKET, ")"),
+      new Token(TokenType.BRACKET, "{"),
+      new Token(TokenType.BRACKET, "}"),
     ]);
     const stmt = Statement.parse(iterator);
     expect(stmt).toBeInstanceOf(IfStatement);

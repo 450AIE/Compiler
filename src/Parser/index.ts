@@ -10,13 +10,7 @@ class Parser {
   static parse(tokens: Token[]) {
     const iterator = new PeekTokenIterator(tokens);
     // 1个文件作为1个Program
-    const program = new Program({ label: null });
-    while (iterator.hasNext()) {
-      const token = iterator.peek();
-      if (token === TokenType.EOF) break;
-      const type = token.getType();
-    }
-    return program;
+    return Program.parse(iterator);
   }
 }
 

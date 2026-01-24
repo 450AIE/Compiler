@@ -37,8 +37,9 @@ class Statement extends ASTNode {
     if (type === TokenType.VARIABLE && lookahead?.getValue() === "=") {
       iterator.unget();
       return AssignStatement.parse(iterator);
-      // if语句
+      // if语句，进入这里的时候，已经把IF消费了
     } else if (type === TokenType.KEYWORD && value === KEYWORD_TYPE.IF) {
+      iterator.unget();
       return IfStatement.parse(iterator);
     }
     iterator.putBack();

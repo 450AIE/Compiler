@@ -16,7 +16,9 @@ class Program extends BlockStatement {
     });
   }
   static parse(iterator: PeekTokenIterator) {
-    return BlockStatement.parse(iterator);
+    const program = new Program({ label: null });
+    program.addChild(BlockStatement.parse(iterator, true));
+    return program;
   }
 }
 

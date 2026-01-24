@@ -6,6 +6,7 @@
     "vitest": "^4.0.18"
   },
   "scripts": {
+    "dev": "pnpm -C src/frontend dev",
     "test": "vitest"
   },
   "author": "",

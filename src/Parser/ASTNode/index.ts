@@ -25,7 +25,9 @@ class ASTNode {
     return this.children;
   }
   addChild(child: ASTNode) {
-    child.parent = this;
+    if (child) {
+      child.parent = this;
+    }
     this.children.push(child);
   }
   getLexeme() {
