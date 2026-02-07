@@ -17,6 +17,7 @@ export const ASTNODE_TYPE = {
 export type ASTNODE_TYPE = (typeof ASTNODE_TYPE)[keyof typeof ASTNODE_TYPE];
 
 export const OPERATOR_BINDING_POWER = {
+  "==": [1, 2],
   "+": [10, 11],
   "-": [10, 11],
   "*": [20, 21],
