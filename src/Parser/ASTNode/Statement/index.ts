@@ -5,6 +5,7 @@ import { KEYWORD_TYPE, TokenType } from "../../../Lexer/consts";
 import Token from "../../../Lexer/Token";
 import PeekTokenIterator from "../../PeekTokenIterator";
 import AssignStatement from "./AssignStatement";
+import DeclareStatement from "./DeclareStatement";
 import IfStatement from "./IfStatement";
 
 /**
@@ -37,6 +38,10 @@ class Statement extends ASTNode {
     if (type === TokenType.VARIABLE && lookahead?.getValue() === "=") {
       iterator.unget();
       return AssignStatement.parse(iterator);
+      // 变量声明语句
+    } else if (type === TokenType.KEYWORD && [KEYWORD_TYPE.CONST, KEYWORD_TYPE.LET].includes(value as any)) {
+      iterator.unget();
+      return DeclareStatement.parse(iterator);
       // if语句，进入这里的时候，已经把IF消费了
     } else if (type === TokenType.KEYWORD && value === KEYWORD_TYPE.IF) {
       iterator.unget();
