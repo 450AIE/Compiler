@@ -9,6 +9,7 @@ import DeclareStatement from "./DeclareStatement";
 import FunctionDeclareStatement from "./FunctionStatement";
 import IfStatement from "./IfStatement";
 import ReturnStatement from "./ReturnStatement";
+import WhileStatement from "./WhileStatement";
 
 /**
  * Statement是语句的含义，这个应该设计为抽象类
@@ -57,6 +58,10 @@ class Statement extends ASTNode {
     } else if (type === TokenType.KEYWORD && value === KEYWORD_TYPE.RETURN) {
       iterator.unget();
       return ReturnStatement.parse(iterator);
+      // while语句
+    } else if (type === TokenType.KEYWORD && value === KEYWORD_TYPE.WHILE) {
+      iterator.unget();
+      return WhileStatement.parse(iterator);
     }
     iterator.putBack();
     return null;

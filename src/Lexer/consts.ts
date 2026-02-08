@@ -44,6 +44,7 @@ export const KEYWORD_TYPE = {
   CONST: "CONST",
   RETURN: "RETURN",
   ELSE: "ELSE",
+  ELSE_IF: "ELSE_IF",
   WHILE: "WHILE",
   FOR: "FOR",
   IN: "IN",
