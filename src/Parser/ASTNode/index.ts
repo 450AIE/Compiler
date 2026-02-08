@@ -12,7 +12,7 @@ class ASTNode {
   public children: ASTNode[];
   public parent?: ASTNode | null;
   public type?: ASTNODE_TYPE;
-  public label: string | null;
+  public label?: string | null;
   public lexme: Token | null;
   constructor({ parent, type, label, lexme }: ASTNodeProps) {
     this.children = [];

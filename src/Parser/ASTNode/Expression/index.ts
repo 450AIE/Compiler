@@ -46,8 +46,9 @@ class Expression extends ASTNode {
       const op = operatorToken.getValue();
       // 暂时只支持二元计算，并且操作符需要是一个节点，才可以将左右操作数addChild
       const opASTNode = new Expression({ label: op, lexme: operatorToken, type: ASTNODE_TYPE.BINARY_OPERATOR });
-      if (op === ")") break;
-      // 没有结合力，代表没有收录这个运算符，或者这个就不是运算符
+      // 这个不是运算符
+      if (operatorToken.getType() !== TokenType.OPERATOR) break;
+      // 没有结合力，代表没有收录这个运算符
       if (!OPERATOR_BINDING_POWER[op]) throw new Error(`暂未支持该运算符: ${op}`);
       // 获取该运算符的左右结合力
       const [leftPower, rightPower] = OPERATOR_BINDING_POWER[op];
