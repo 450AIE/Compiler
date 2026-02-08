@@ -1,5 +1,5 @@
 import AlphabetChecker from "./AlphabetChecker";
-import { TokenType } from "./consts";
+import { PUNCTUATION_TYPE, TokenType } from "./consts";
 import PeekIterator from "./PeekIterator";
 import Token from "./Token";
 
@@ -35,6 +35,9 @@ class Lexer {
         tokens.push(Token.makeVariableOrKeyword(iterator));
       } else if (["'", '"'].includes(char)) {
         tokens.push(Token.makeString(iterator));
+      } else if (Object.values(PUNCTUATION_TYPE).includes(char as PUNCTUATION_TYPE)) {
+        iterator.next();
+        tokens.push(new Token(TokenType.PUNCTUATION, char));
       } else {
         throw new Error(`Unknown token: ${char}`);
       }

@@ -29,6 +29,15 @@ export const TokenType = {
 
 export type TokenType = (typeof TokenType)[keyof typeof TokenType];
 
+export const PUNCTUATION_TYPE = {
+  COMMA: ",",
+  SEMICOLON: ";",
+  COLON: ":",
+  DOT: ".",
+} as const;
+
+export type PUNCTUATION_TYPE = (typeof PUNCTUATION_TYPE)[keyof typeof PUNCTUATION_TYPE];
+
 export const KEYWORD_TYPE = {
   IF: "IF",
   LET: "LET",

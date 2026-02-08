@@ -1,9 +1,9 @@
 import Statement from "..";
-import { ASTNodeProps } from "../..";
+import ASTNode, { ASTNodeProps } from "../..";
 import { ASTNODE_TYPE } from "../../../consts";
 import PeekTokenIterator from "../../../PeekTokenIterator";
 
-class BlockStatement extends Statement {
+class BlockStatement extends ASTNode {
   constructor({ label, type }: ASTNodeProps) {
     super({
       type: type ?? ASTNODE_TYPE.BLOCK,

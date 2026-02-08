@@ -6,6 +6,7 @@ import Token from "../../../Lexer/Token";
 import PeekTokenIterator from "../../PeekTokenIterator";
 import AssignStatement from "./AssignStatement";
 import DeclareStatement from "./DeclareStatement";
+import FunctionDeclareStatement from "./FunctionStatement";
 import IfStatement from "./IfStatement";
 
 /**
@@ -24,7 +25,8 @@ class Statement extends ASTNode {
   static parse(iterator: PeekTokenIterator) {
     if (!iterator.hasNext()) return null;
     /**
-     * 这里必须向后面看2个参数才可以实现确定是什么类型，比如
+     * 这里必须向后面看2个参数才可以实现确定是什么类型，比如变量赋值是
+     * a = 1，函数调用时a()，需要看后面是=还是(判断
      */
     const token = iterator.peek();
     if (token === TokenType.EOF) return null;
@@ -46,6 +48,10 @@ class Statement extends ASTNode {
     } else if (type === TokenType.KEYWORD && value === KEYWORD_TYPE.IF) {
       iterator.unget();
       return IfStatement.parse(iterator);
+      // 函数声明语句
+    } else if (type === TokenType.KEYWORD && value === KEYWORD_TYPE.FUNCTION) {
+      iterator.unget();
+      return FunctionDeclareStatement.parse(iterator);
     }
     iterator.putBack();
     return null;
