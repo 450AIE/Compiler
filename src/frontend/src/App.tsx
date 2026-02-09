@@ -14,19 +14,28 @@ type AstView = {
 
 type AstRenderMode = "data" | "tree";
 
-const toTokenView = (token: Token): TokenView => ({
-  type: token.getType(),
-  value: token.getValue(),
-});
+const toTokenView = (token: any): TokenView => {
+  if (!token) return { type: "UNKNOWN", value: "null" };
+  if (typeof token.getType === "function" && typeof token.getValue === "function") {
+    return { type: token.getType(), value: token.getValue() };
+  }
+  if (typeof token.type === "string" && typeof token.value === "string") {
+    return { type: token.type, value: token.value };
+  }
+  return { type: "UNKNOWN", value: String(token) };
+};
 
 const toAstView = (node: any): AstView => {
-  const lexme = node.getLexeme?.() ?? null;
-  const children = node.getChildren?.() ?? [];
+  if (!node) {
+    return { type: "NULL", label: null, lexme: null, children: [] };
+  }
+  const lexme = node.getLexeme?.() ?? node.getLexme?.() ?? null;
+  const children = node.getChildren?.() ?? node.children ?? [];
   return {
     type: node.getType?.(),
     label: node.getLabel?.() ?? null,
     lexme: lexme ? toTokenView(lexme) : null,
-    children: children.map((c: any) => toAstView(c)),
+    children: (Array.isArray(children) ? children : []).map((c: any) => toAstView(c)),
   };
 };
 
@@ -52,7 +61,22 @@ function AstTreeNode({ node }: { node: AstView }) {
 }
 
 function App() {
-  const [code, setCode] = useState<string>("{ IF(1){ } ELSE { } }");
+  const [code, setCode] = useState<string>(`FUNCTION get(a,b,c,d){
+  CONST x = (a + b) * (c + d)
+  LET i = 2
+  WHILE(i < 3){
+    IF(i == 1){
+      LET y = x + i * 2
+    } ELSE {
+      LET y = x - i
+    }
+    i = i + 1
+  }
+  FOR(LET b = 1; b == 10; b = b + 1) {
+    CONST a = 1 + 1
+  }
+  RETURN x
+}`);
   const [astMode, setAstMode] = useState<AstRenderMode>("data");
 
   const { tokensText, astText, astTree } = useMemo(() => {

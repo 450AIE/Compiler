@@ -16,7 +16,7 @@ class ForTestStatement extends ASTNode {
    *
    * ForInit --- DeclareStatement | AssignStatement ｜ null
    * ForTest --- Expression ｜ null
-   * ForUpdate --- Expression | AssignStatement | 后续还可能是函数调用等等
+   * ForUpdate ---  AssignStatement | 后续还可能是函数调用等等
    *
    */
   static parse(iterator: PeekTokenIterator) {

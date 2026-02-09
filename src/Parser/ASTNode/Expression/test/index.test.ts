@@ -120,7 +120,7 @@ describe("Expression", () => {
   it("遇到未支持的运算符会抛错", () => {
     const tokens = [
       new Token(TokenType.NUMBER, "1"),
-      new Token(TokenType.OPERATOR, "^"),
+      new Token(TokenType.OPERATOR, "***"),
       new Token(TokenType.NUMBER, "2"),
     ];
     const iterator = new PeekTokenIterator(tokens);

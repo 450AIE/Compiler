@@ -39,6 +39,101 @@ describe("ForStatement.parse", () => {
     expect((node.getLexeme() as Token).getValue()).toBe(KEYWORD_TYPE.FOR);
   });
 
+  it("可以解析 for(; b < 10; b = b + 1) {}", () => {
+    const iterator = new PeekTokenIterator([
+      new Token(TokenType.KEYWORD, KEYWORD_TYPE.FOR),
+      new Token(TokenType.BRACKET, "("),
+      new Token(TokenType.PUNCTUATION, ";"),
+      new Token(TokenType.VARIABLE, "b"),
+      new Token(TokenType.OPERATOR, "<"),
+      new Token(TokenType.NUMBER, "10"),
+      new Token(TokenType.PUNCTUATION, ";"),
+      new Token(TokenType.VARIABLE, "b"),
+      new Token(TokenType.OPERATOR, "="),
+      new Token(TokenType.VARIABLE, "b"),
+      new Token(TokenType.OPERATOR, "+"),
+      new Token(TokenType.NUMBER, "1"),
+      new Token(TokenType.BRACKET, ")"),
+      new Token(TokenType.BRACKET, "{"),
+      new Token(TokenType.BRACKET, "}"),
+    ]);
+
+    const node = ForStatement.parse(iterator);
+    expect(node.getType()).toBe(ASTNODE_TYPE.FOR_STATEMENT);
+  });
+
+  it("可以解析 for(b = 1; b < 10; b = b + 1) {}", () => {
+    const iterator = new PeekTokenIterator([
+      new Token(TokenType.KEYWORD, KEYWORD_TYPE.FOR),
+      new Token(TokenType.BRACKET, "("),
+      new Token(TokenType.VARIABLE, "b"),
+      new Token(TokenType.OPERATOR, "="),
+      new Token(TokenType.NUMBER, "1"),
+      new Token(TokenType.PUNCTUATION, ";"),
+      new Token(TokenType.VARIABLE, "b"),
+      new Token(TokenType.OPERATOR, "<"),
+      new Token(TokenType.NUMBER, "10"),
+      new Token(TokenType.PUNCTUATION, ";"),
+      new Token(TokenType.VARIABLE, "b"),
+      new Token(TokenType.OPERATOR, "="),
+      new Token(TokenType.VARIABLE, "b"),
+      new Token(TokenType.OPERATOR, "+"),
+      new Token(TokenType.NUMBER, "1"),
+      new Token(TokenType.BRACKET, ")"),
+      new Token(TokenType.BRACKET, "{"),
+      new Token(TokenType.BRACKET, "}"),
+    ]);
+
+    const node = ForStatement.parse(iterator);
+    expect(node.getType()).toBe(ASTNODE_TYPE.FOR_STATEMENT);
+  });
+
+  it("可以解析 for(LET b = 1;; b = b + 1) {}", () => {
+    const iterator = new PeekTokenIterator([
+      new Token(TokenType.KEYWORD, KEYWORD_TYPE.FOR),
+      new Token(TokenType.BRACKET, "("),
+      new Token(TokenType.KEYWORD, KEYWORD_TYPE.LET),
+      new Token(TokenType.VARIABLE, "b"),
+      new Token(TokenType.OPERATOR, "="),
+      new Token(TokenType.NUMBER, "1"),
+      new Token(TokenType.PUNCTUATION, ";"),
+      new Token(TokenType.PUNCTUATION, ";"),
+      new Token(TokenType.VARIABLE, "b"),
+      new Token(TokenType.OPERATOR, "="),
+      new Token(TokenType.VARIABLE, "b"),
+      new Token(TokenType.OPERATOR, "+"),
+      new Token(TokenType.NUMBER, "1"),
+      new Token(TokenType.BRACKET, ")"),
+      new Token(TokenType.BRACKET, "{"),
+      new Token(TokenType.BRACKET, "}"),
+    ]);
+
+    const node = ForStatement.parse(iterator);
+    expect(node.getType()).toBe(ASTNODE_TYPE.FOR_STATEMENT);
+  });
+
+  it("可以解析 for(LET b = 1; b < 10;) {}", () => {
+    const iterator = new PeekTokenIterator([
+      new Token(TokenType.KEYWORD, KEYWORD_TYPE.FOR),
+      new Token(TokenType.BRACKET, "("),
+      new Token(TokenType.KEYWORD, KEYWORD_TYPE.LET),
+      new Token(TokenType.VARIABLE, "b"),
+      new Token(TokenType.OPERATOR, "="),
+      new Token(TokenType.NUMBER, "1"),
+      new Token(TokenType.PUNCTUATION, ";"),
+      new Token(TokenType.VARIABLE, "b"),
+      new Token(TokenType.OPERATOR, "<"),
+      new Token(TokenType.NUMBER, "10"),
+      new Token(TokenType.PUNCTUATION, ";"),
+      new Token(TokenType.BRACKET, ")"),
+      new Token(TokenType.BRACKET, "{"),
+      new Token(TokenType.BRACKET, "}"),
+    ]);
+
+    const node = ForStatement.parse(iterator);
+    expect(node.getType()).toBe(ASTNODE_TYPE.FOR_STATEMENT);
+  });
+
   it("可以解析 for(;;) {}", () => {
     const iterator = new PeekTokenIterator([
       new Token(TokenType.KEYWORD, KEYWORD_TYPE.FOR),
