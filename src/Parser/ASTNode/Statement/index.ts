@@ -6,6 +6,7 @@ import Token from "../../../Lexer/Token";
 import PeekTokenIterator from "../../PeekTokenIterator";
 import AssignStatement from "./AssignStatement";
 import DeclareStatement from "./DeclareStatement";
+import ForStatement from "./ForStatement";
 import FunctionDeclareStatement from "./FunctionStatement";
 import IfStatement from "./IfStatement";
 import ReturnStatement from "./ReturnStatement";
@@ -38,7 +39,7 @@ class Statement extends ASTNode {
     if (value === "}") return null;
     iterator.next();
     const lookahead = iterator.peek() as Token;
-    // 是赋值语句，比如a = 1
+    // 是赋值语句，比如a = 1，但是assignment其实也可以是 a += 2，以后可以进行扩展
     if (type === TokenType.VARIABLE && lookahead?.getValue() === "=") {
       iterator.unget();
       return AssignStatement.parse(iterator);
@@ -62,6 +63,10 @@ class Statement extends ASTNode {
     } else if (type === TokenType.KEYWORD && value === KEYWORD_TYPE.WHILE) {
       iterator.unget();
       return WhileStatement.parse(iterator);
+      // for语句
+    } else if (type === TokenType.KEYWORD && value === KEYWORD_TYPE.FOR) {
+      iterator.unget();
+      return ForStatement.parse(iterator);
     }
     iterator.putBack();
     return null;

@@ -7,6 +7,9 @@ export const ASTNODE_TYPE = {
   IF_STATEMENT: "IF_STATEMENT",
   ELSE_STATEMENT: "ELSE_STATEMENT",
   FOR_STATEMENT: "FOR_STATEMENT",
+  FOR_INIT_STATEMENT: "FOR_INIT_STATEMENT",
+  FOR_UPDATE_STATEMENT: "FOR_UPDATE_STATEMENT",
+  FOR_TEST_STATEMENT: "FOR_TEST_STATEMENT",
   WHILE_STATEMENT: "WHILE_STATEMENT",
   ASSIGN_STATEMENT: "ASSIGN_STATEMENT",
   VARIABLE_DECLARE_STATEMENT: "VARIABLE_DECLARE_STATEMENT",
@@ -20,11 +23,24 @@ export const ASTNODE_TYPE = {
 export type ASTNODE_TYPE = (typeof ASTNODE_TYPE)[keyof typeof ASTNODE_TYPE];
 
 export const OPERATOR_BINDING_POWER = {
-  "==": [1, 2],
-  "+": [10, 11],
-  "-": [10, 11],
-  "*": [20, 21],
-  "/": [20, 21],
+  "||": [1, 2],
+  "&&": [3, 4],
+  "|": [5, 6],
+  "^": [7, 8],
+  "&": [9, 10],
+  "==": [11, 12],
+  "!=": [11, 12],
+  ">": [13, 14],
+  "<": [13, 14],
+  ">=": [13, 14],
+  "<=": [13, 14],
+  "<<": [15, 16],
+  ">>": [15, 16],
+  "+": [17, 18],
+  "-": [17, 18],
+  "*": [19, 20],
+  "/": [19, 20],
+  "%": [19, 20],
 } as const;
 
 export type OPERATOR_BINDING_POWER = (typeof OPERATOR_BINDING_POWER)[keyof typeof OPERATOR_BINDING_POWER];
