@@ -8,6 +8,7 @@ import AssignStatement from "./AssignStatement";
 import DeclareStatement from "./DeclareStatement";
 import ForStatement from "./ForStatement";
 import FunctionDeclareStatement from "./FunctionStatement";
+import FunctionCallStatement from "./FunctionStatement/FunctionCall";
 import IfStatement from "./IfStatement";
 import ReturnStatement from "./ReturnStatement";
 import WhileStatement from "./WhileStatement";
@@ -67,6 +68,10 @@ class Statement extends ASTNode {
     } else if (type === TokenType.KEYWORD && value === KEYWORD_TYPE.FOR) {
       iterator.unget();
       return ForStatement.parse(iterator);
+      // 函数调用语句
+    } else if (type === TokenType.VARIABLE && lookahead?.getValue() === "(") {
+      iterator.unget();
+      return FunctionCallStatement.parse(iterator);
     }
     iterator.putBack();
     return null;
