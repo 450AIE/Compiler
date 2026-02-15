@@ -2,7 +2,7 @@ import ASTNode, { ASTNodeProps } from "../..";
 import Token from "../../../../Lexer/Token";
 import { ASTNODE_TYPE } from "../../../consts";
 import PeekTokenIterator from "../../../PeekTokenIterator";
-import AssignStatement from "../AssignStatement";
+import AssignExpression from "../../Expression/AssignExpression";
 
 class DeclareStatement extends ASTNode {
   constructor({ label }: ASTNodeProps) {
@@ -14,7 +14,7 @@ class DeclareStatement extends ASTNode {
   static parse(iterator: PeekTokenIterator) {
     const declare = new DeclareStatement({ label: null });
     const keyword = iterator.next();
-    const assignment = AssignStatement.parse(iterator);
+    const assignment = AssignExpression.parse(iterator);
     declare.lexme = keyword as Token;
     declare.addChild(assignment);
     return declare;

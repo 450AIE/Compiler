@@ -64,6 +64,7 @@ function App() {
   const [code, setCode] = useState<string>(`FUNCTION get(a,b,c,d){
   CONST x = (a + b) * (c + d)
   LET i = 2
+  CONST arr = [1,2,3,{ name : 'White Album 2' }]
   WHILE(i < 3){
     IF(i == 1){
       LET y = x + i * 2

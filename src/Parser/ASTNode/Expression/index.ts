@@ -4,6 +4,11 @@ import Token from "../../../Lexer/Token";
 import { ASTNODE_TYPE, OPERATOR_BINDING_POWER } from "../../consts";
 import PeekTokenIterator from "../../PeekTokenIterator";
 import Factor from "../Factor";
+import FunctionCallStatement from "../Statement/FunctionStatement/FunctionCall";
+import ArrayExpression from "./ArrayExpression";
+import AssignExpression from "./AssignExpression";
+import ObjectExpression from "./ObjectExpression";
+import TenaryExpression from "./TenaryExpression";
 
 class Expression extends ASTNode {
   constructor({ label, type }: ASTNodeProps) {
@@ -13,14 +18,39 @@ class Expression extends ASTNode {
     });
   }
   /**
-   * prattParse算法，解析表达式。看不懂的话自己举例 a + b * 2 * c + a / 4
+   * 数组，对象，复杂表达式的赋值都在这里
    */
   static parse(iterator: PeekTokenIterator) {
     const expression = new Expression({ label: null });
+    const token = iterator.next() as Token;
+    const lookahead = iterator.peek() as Token;
+    const value = token.getValue();
+    const type = token.getType();
+    // 赋值语句
+    if (type === TokenType.VARIABLE && lookahead?.getValue() === "=") {
+      iterator.unget();
+      return AssignExpression.parse(iterator);
+      // 函数声明
+    } else if (type === TokenType.VARIABLE && lookahead?.getValue() === "(") {
+      iterator.unget();
+      return FunctionCallStatement.parse(iterator);
+      // 数组声明
+    } else if (type === TokenType.BRACKET && value === "[") {
+      iterator.unget();
+      return ArrayExpression.parse(iterator);
+    } else if (type === TokenType.BRACKET && value === "{") {
+      iterator.unget();
+      return ObjectExpression.parse(iterator);
+    }
+    iterator.unget();
+    // 上述情况都不是的时候，就代表是计算的表达式
     const root = Expression.prattParse(iterator, 0);
     expression.addChild(root);
     return expression;
   }
+  /**
+   * prattParse算法，解析表达式。看不懂的话自己举例 a + b * 2 * c + a / 4
+   */
   private static prattParse(iterator: PeekTokenIterator, prevBindingPower: number) {
     // 左侧操作数，即 a + expression中的a，有可能是括号
     let leftNumToken = iterator.next() as Token;

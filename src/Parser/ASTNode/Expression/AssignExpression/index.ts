@@ -2,13 +2,13 @@ import ASTNode from "../..";
 import { ASTNodeProps } from "../..";
 import { ASTNODE_TYPE } from "../../../consts";
 import PeekTokenIterator from "../../../PeekTokenIterator";
-import Expression from "../../Expression";
+import Expression from "..";
 import Factor from "../../Factor";
 
-class AssignStatement extends ASTNode {
+class AssignExpression extends ASTNode {
   constructor({ label }: ASTNodeProps) {
     super({
-      type: ASTNODE_TYPE.ASSIGN_STATEMENT,
+      type: ASTNODE_TYPE.ASSIGN_EXPRESSION,
       label,
     });
   }
@@ -16,7 +16,7 @@ class AssignStatement extends ASTNode {
    * 一个赋值表达式的样式是 a = 1，所以是先解析Factor，再吃掉=，再解析Expression
    */
   static parse(iterator: PeekTokenIterator) {
-    const assign = new AssignStatement({ label: null });
+    const assign = new AssignExpression({ label: null });
     const variabel = iterator.peek();
     //
     const factor = Factor.parse(iterator);
@@ -30,4 +30,4 @@ class AssignStatement extends ASTNode {
   }
 }
 
-export default AssignStatement;
+export default AssignExpression;

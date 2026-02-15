@@ -3,12 +3,12 @@ import { TokenType } from "../../../../../Lexer/consts";
 import Token from "../../../../../Lexer/Token";
 import PeekTokenIterator from "../../../../PeekTokenIterator";
 import { ASTNODE_TYPE } from "../../../../consts";
-import AssignStatement from "..";
+import AssignExpression from "..";
 
-describe("AssignStatement", () => {
+describe("AssignExpression", () => {
   it("构造函数可以正确设置类型", () => {
-    const node = new AssignStatement({ label: null });
-    expect(node.getType()).toBe(ASTNODE_TYPE.ASSIGN_STATEMENT);
+    const node = new AssignExpression({ label: null });
+    expect(node.getType()).toBe(ASTNODE_TYPE.ASSIGN_EXPRESSION);
   });
 
   it("可以解析 a = 1", () => {
@@ -18,9 +18,9 @@ describe("AssignStatement", () => {
       new Token(TokenType.NUMBER, "1"),
     ];
     const iterator = new PeekTokenIterator(tokens);
-    const node = AssignStatement.parse(iterator);
+    const node = AssignExpression.parse(iterator);
 
-    expect(node.getType()).toBe(ASTNODE_TYPE.ASSIGN_STATEMENT);
+    expect(node.getType()).toBe(ASTNODE_TYPE.ASSIGN_EXPRESSION);
     expect((node.getLexeme() as Token).getValue()).toBe("=");
 
     const children = node.getChildren();

@@ -2,9 +2,9 @@ import { describe, expect, it } from "vitest";
 import { TokenType } from "../../../../Lexer/consts";
 import Token from "../../../../Lexer/Token";
 import PeekTokenIterator from "../../../PeekTokenIterator";
-import AssignStatement from "../AssignStatement";
 import IfStatement from "../IfStatement";
 import Statement from "..";
+import AssignExpression from "../../Expression/AssignExpression";
 
 describe("Statement.parse", () => {
   it("空 token 列表会返回 null", () => {
@@ -28,7 +28,7 @@ describe("Statement.parse", () => {
       new Token(TokenType.NUMBER, "1"),
     ]);
     const stmt = Statement.parse(iterator);
-    expect(stmt).toBeInstanceOf(AssignStatement);
+    expect(stmt).toBeInstanceOf(AssignExpression);
   });
 
   it("可以分发为 if 语句", () => {
@@ -42,17 +42,5 @@ describe("Statement.parse", () => {
     ]);
     const stmt = Statement.parse(iterator);
     expect(stmt).toBeInstanceOf(IfStatement);
-  });
-
-  it("非赋值且非 if 的场景会返回 null 并回退已消费 token", () => {
-    const iterator = new PeekTokenIterator([
-      new Token(TokenType.VARIABLE, "a"),
-      new Token(TokenType.OPERATOR, "+"),
-      new Token(TokenType.NUMBER, "1"),
-    ]);
-    const stmt = Statement.parse(iterator);
-    expect(stmt).toBe(null);
-    const next = iterator.peek() as Token;
-    expect(next.getValue()).toBe("a");
   });
 });

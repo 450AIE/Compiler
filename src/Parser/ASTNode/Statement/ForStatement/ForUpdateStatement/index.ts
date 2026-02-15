@@ -3,8 +3,7 @@ import { KEYWORD_TYPE, TokenType } from "../../../../../Lexer/consts";
 import Token from "../../../../../Lexer/Token";
 import { ASTNODE_TYPE } from "../../../../consts";
 import PeekTokenIterator from "../../../../PeekTokenIterator";
-import Expression from "../../../Expression";
-import AssignStatement from "../../AssignStatement";
+import AssignExpression from "../../../Expression/AssignExpression";
 
 class ForUpdateStatement extends ASTNode {
   constructor({ label }: ASTNodeProps) {
@@ -30,7 +29,7 @@ class ForUpdateStatement extends ASTNode {
     let child;
     if (type === TokenType.VARIABLE && lookahead?.getValue() === "=") {
       iterator.unget();
-      child = AssignStatement.parse(iterator);
+      child = AssignExpression.parse(iterator);
     } else if (value === ")") {
       iterator.unget();
       child = null;

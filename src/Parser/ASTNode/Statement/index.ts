@@ -4,11 +4,10 @@ import { ASTNodeProps } from "..";
 import { KEYWORD_TYPE, TokenType } from "../../../Lexer/consts";
 import Token from "../../../Lexer/Token";
 import PeekTokenIterator from "../../PeekTokenIterator";
-import AssignStatement from "./AssignStatement";
+import Expression from "../Expression";
 import DeclareStatement from "./DeclareStatement";
 import ForStatement from "./ForStatement";
 import FunctionDeclareStatement from "./FunctionStatement";
-import FunctionCallStatement from "./FunctionStatement/FunctionCall";
 import IfStatement from "./IfStatement";
 import ReturnStatement from "./ReturnStatement";
 import WhileStatement from "./WhileStatement";
@@ -41,11 +40,12 @@ class Statement extends ASTNode {
     iterator.next();
     const lookahead = iterator.peek() as Token;
     // 是赋值语句，比如a = 1，但是assignment其实也可以是 a += 2，以后可以进行扩展
-    if (type === TokenType.VARIABLE && lookahead?.getValue() === "=") {
-      iterator.unget();
-      return AssignStatement.parse(iterator);
-      // 变量声明语句
-    } else if (type === TokenType.KEYWORD && [KEYWORD_TYPE.CONST, KEYWORD_TYPE.LET].includes(value as any)) {
+    // if (type === TokenType.VARIABLE && lookahead?.getValue() === "=") {
+    //   iterator.unget();
+    //   return AssignStatement.parse(iterator);
+    // }
+    // 变量声明语句
+    if (type === TokenType.KEYWORD && [KEYWORD_TYPE.CONST, KEYWORD_TYPE.LET].includes(value as any)) {
       iterator.unget();
       return DeclareStatement.parse(iterator);
       // if语句，进入这里的时候，已经把IF消费了
@@ -68,13 +68,17 @@ class Statement extends ASTNode {
     } else if (type === TokenType.KEYWORD && value === KEYWORD_TYPE.FOR) {
       iterator.unget();
       return ForStatement.parse(iterator);
-      // 函数调用语句
-    } else if (type === TokenType.VARIABLE && lookahead?.getValue() === "(") {
-      iterator.unget();
-      return FunctionCallStatement.parse(iterator);
     }
-    iterator.putBack();
-    return null;
+    // 函数调用语句
+    // else if (type === TokenType.VARIABLE && lookahead?.getValue() === "(") {
+    //   iterator.unget();
+    //   return FunctionCallStatement.parse(iterator);
+    // }
+    // 其他的就默认认为是表达式
+    iterator.unget();
+    return Expression.parse(iterator);
+    // iterator.putBack();
+    // return null;
   }
 }
 

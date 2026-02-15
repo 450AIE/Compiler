@@ -21,7 +21,7 @@ describe("DeclareStatement.parse", () => {
 
     const children = node.getChildren();
     expect(children.length).toBe(1);
-    expect(children[0].getType()).toBe(ASTNODE_TYPE.ASSIGN_STATEMENT);
+    expect(children[0].getType()).toBe(ASTNODE_TYPE.ASSIGN_EXPRESSION);
   });
 
   it("可以解析 const a = 1", () => {

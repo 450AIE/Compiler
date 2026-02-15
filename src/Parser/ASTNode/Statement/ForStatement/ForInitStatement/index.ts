@@ -3,7 +3,7 @@ import { KEYWORD_TYPE, TokenType } from "../../../../../Lexer/consts";
 import Token from "../../../../../Lexer/Token";
 import { ASTNODE_TYPE } from "../../../../consts";
 import PeekTokenIterator from "../../../../PeekTokenIterator";
-import AssignStatement from "../../AssignStatement";
+import AssignExpression from "../../../Expression/AssignExpression";
 import DeclareStatement from "../../DeclareStatement";
 
 class ForInitStatement extends ASTNode {
@@ -34,7 +34,7 @@ class ForInitStatement extends ASTNode {
     let child;
     if (type === TokenType.VARIABLE && lookahead?.getValue() === "=") {
       iterator.unget();
-      child = AssignStatement.parse(iterator);
+      child = AssignExpression.parse(iterator);
     } else if (type === TokenType.KEYWORD && [KEYWORD_TYPE.CONST, KEYWORD_TYPE.LET].includes(value as any)) {
       iterator.unget();
       child = DeclareStatement.parse(iterator);
