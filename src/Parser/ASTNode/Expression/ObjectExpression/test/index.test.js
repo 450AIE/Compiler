@@ -61,6 +61,23 @@ describe("ObjectExpression", () => {
     expect(iterator.peek()).toBe(TokenType.EOF);
   });
 
+  it('可以解析对象 {name:"White Album 2"}', () => {
+    const iterator = new PeekTokenIterator([
+      new Token(TokenType.BRACKET, "{"),
+      new Token(TokenType.VARIABLE, "name"),
+      new Token(TokenType.PUNCTUATION, ":"),
+      new Token(TokenType.STRING, '"White Album 2"'),
+      new Token(TokenType.BRACKET, "}"),
+    ]);
+    const node = ObjectExpression.parse(iterator);
+
+    const children = node.getChildren();
+    expect(children.length).toBe(2);
+    expect(children[0].getType()).toBe(ASTNODE_TYPE.VARIABLE);
+    expect(children[1].getType()).toBe(ASTNODE_TYPE.EXPRESSION);
+    expect(iterator.peek()).toBe(TokenType.EOF);
+  });
+
   it('可以解析对象 {"a":[1],}（支持 key 为标量与尾逗号）', () => {
     const iterator = new PeekTokenIterator([
       new Token(TokenType.BRACKET, "{"),

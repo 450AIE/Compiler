@@ -64,9 +64,9 @@ class Expression extends ASTNode {
       const closingToken = iterator.next() as Token;
       if (closingToken?.getValue() !== ")") throw new Error(`Unexpected Token: 缺失右侧括号`);
     }
-    // 暂时只运算number和变量
+    // 这个算法只是根据运算优先级拼出AST，至于节点之间是否可以计算（比如string * string），那是后续虚拟机解释执行检查的
     // @ts-expect-error
-    if (![TokenType.NUMBER, TokenType.VARIABLE, TokenType.BRACKET].includes(type)) {
+    if (![TokenType.VARIABLE, TokenType.BRACKET].includes(type) && !Token.isScalar(type)) {
       throw new Error(`Unexpected Token: ${leftNumToken}`);
     }
     while (true) {

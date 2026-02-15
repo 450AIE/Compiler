@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import PeekIterator from "../../PeekIterator";
-import { TokenType } from "../../consts";
+import { KEYWORD_TYPE, TokenType } from "../../consts";
 import Token from "../index";
 
 describe("Token.makeNumber", () => {
@@ -181,12 +181,12 @@ describe("Token.makeVariableOrKeyword", () => {
   });
 
   it("可以识别关键字", () => {
-    const iterator = new PeekIterator("IF(x)");
+    const iterator = new PeekIterator("if(x)");
     const result = Token.makeVariableOrKeyword(iterator);
     expect(result).toBeInstanceOf(Token);
     const token = result as Token;
     expect(token.type).toBe(TokenType.KEYWORD);
-    expect(token.value).toBe("IF");
+    expect(token.value).toBe(KEYWORD_TYPE.IF);
     expect(iterator.peek()).toBe("(");
   });
 

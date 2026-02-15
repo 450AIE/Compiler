@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import Lexer from "../index";
-import { TokenType } from "../consts";
+import { KEYWORD_TYPE, TokenType } from "../consts";
 
 describe("Lexer.parse", () => {
   it("可以解析空字符串", () => {
@@ -35,9 +35,9 @@ describe("Lexer.parse", () => {
   });
 
   it("可以解析关键字与括号组合", () => {
-    const tokens = Lexer.parse("IF(x)");
+    const tokens = Lexer.parse("if(x)");
     expect(tokens).toEqual([
-      { type: TokenType.KEYWORD, value: "IF" },
+      { type: TokenType.KEYWORD, value: KEYWORD_TYPE.IF },
       { type: TokenType.BRACKET, value: "(" },
       { type: TokenType.VARIABLE, value: "x" },
       { type: TokenType.BRACKET, value: ")" },

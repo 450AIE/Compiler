@@ -41,6 +41,20 @@ describe("ArrayExpression", () => {
     expect(iterator.peek()).toBe(TokenType.EOF);
   });
 
+  it('可以解析数组含字符串 ["White Album 2"]', () => {
+    const iterator = new PeekTokenIterator([
+      new Token(TokenType.BRACKET, "["),
+      new Token(TokenType.STRING, '"White Album 2"'),
+      new Token(TokenType.BRACKET, "]"),
+    ]);
+    const node = ArrayExpression.parse(iterator);
+
+    const children = node.getChildren();
+    expect(children.length).toBe(1);
+    expect(children[0].getType()).toBe(ASTNODE_TYPE.EXPRESSION);
+    expect(iterator.peek()).toBe(TokenType.EOF);
+  });
+
   it("可以解析混合与嵌套元素 [1, 2+3, [4], a=5]", () => {
     const iterator = new PeekTokenIterator([
       new Token(TokenType.BRACKET, "["),

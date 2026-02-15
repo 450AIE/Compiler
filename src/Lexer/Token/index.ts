@@ -17,7 +17,7 @@ class Token {
   }
   static isScalar(type: TokenType) {
     // @ts-expect-error
-    return [TokenType.NUMBER, TokenType.STRING, TokenType.BOOLEAN, TokenType.NULL].includes(type);
+    return [TokenType.NUMBER, TokenType.STRING, TokenType.BOOLEAN, TokenType.NULL, TokenType.BIGINT].includes(type);
   }
   /**
    * 以下的makeXXX方法都是接收迭代器，然后进行往后面进行迭代读取字符解析为XXX。
@@ -310,7 +310,7 @@ class Token {
           }
           iterator.putBack();
           // 遇到不是合法的标识符字符了，现在判断s是否是关键字，如果不是，就是变量
-          if (KEYWORD_TYPE[s]) return new Token(TokenType.KEYWORD, s);
+          if (KEYWORD_TYPE[s.toUpperCase()]) return new Token(TokenType.KEYWORD, s);
           return new Token(TokenType.VARIABLE, s);
         }
       }

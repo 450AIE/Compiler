@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { TokenType } from "../../../../Lexer/consts";
+import { KEYWORD_TYPE, TokenType } from "../../../../Lexer/consts";
 import Token from "../../../../Lexer/Token";
 import PeekTokenIterator from "../../../PeekTokenIterator";
 import IfStatement from "../IfStatement";
@@ -33,7 +33,7 @@ describe("Statement.parse", () => {
 
   it("可以分发为 if 语句", () => {
     const iterator = new PeekTokenIterator([
-      new Token(TokenType.KEYWORD, "IF"),
+      new Token(TokenType.KEYWORD, KEYWORD_TYPE.IF),
       new Token(TokenType.BRACKET, "("),
       new Token(TokenType.VARIABLE, "x"),
       new Token(TokenType.BRACKET, ")"),

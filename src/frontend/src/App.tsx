@@ -61,22 +61,36 @@ function AstTreeNode({ node }: { node: AstView }) {
 }
 
 function App() {
-  const [code, setCode] = useState<string>(`FUNCTION get(a,b,c,d){
-  CONST x = (a + b) * (c + d)
-  LET i = 2
-  CONST arr = [1,2,3,{ name : 'White Album 2' }]
-  WHILE(i < 3){
-    IF(i == 1){
-      LET y = x + i * 2
-    } ELSE {
-      LET y = x - i
+  const [code, setCode] = useState<string>(`function get(a,b,c,d){
+  const x = (a + b) * (c + d)
+  let i = 2
+  const arr = [1,2,3,{ name : 'White Album 2' }]
+  const Obj = {
+    son:{
+      name: '陈熙阳'
+    },
+    sonSon:{
+      name: '雷超'
+    },
+    sonSonSon:{
+      name: '龙旭',
+      info:{
+        sex: '未知'
+      }
+    }
+  }
+  while(i < 3){
+    if(i == 1){
+      let y = x + i * 2
+    } else {
+      let y = x - i
     }
     i = i + 1
   }
-  FOR(LET b = 1; b == 10; b = b + 1) {
-    CONST a = 1 + 1
+  for(let b = 1; b == 10; b = b + 1) {
+    const a = 1 + 1
   }
-  RETURN x
+  return x
 }`);
   const [astMode, setAstMode] = useState<AstRenderMode>("data");
 
