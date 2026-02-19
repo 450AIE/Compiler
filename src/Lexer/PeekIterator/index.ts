@@ -1,34 +1,37 @@
 import { TokenType } from "../consts";
-import Token from "../Token";
+import { Char, Location } from "./types";
 
 /**
  * 封装一个支持peek操作的迭代器
  */
-class PeekIterator<T = string> {
+class PeekIterator<T = Char<string>> {
   private iterator: Iterator<T, undefined>;
   // 调用peek后，将读取的元素放入peekedQueue，链表性能更好，为了简单这里用数组
-  private peekedQueue: (T | "EOF")[];
+  private peekedQueue: T[];
   // 调用next后，将读取的元素放入nextedQueue
-  private nextedQueue: (T | "EOF")[];
+  private nextedQueue: T[];
   public isDone: boolean;
+  // 当前迭代器的位置，line从1开始，column从0开始(规范)
+  public location: Location;
   // 接收字符串进行迭代
   constructor(string: Iterable<T>) {
     this.iterator = string[Symbol.iterator]();
     this.peekedQueue = [];
     this.nextedQueue = [];
     this.isDone = false;
+    this.location = { line: 1, column: 0, index: 0 };
   }
   // 查看将要迭代吃掉的下一个元素
-  peek(): T | "EOF" {
+  peek(): T {
     if (this.peekedQueue.length) {
       return this.peekedQueue[this.peekedQueue.length - 1];
     }
-    const val = this.next();
+    const char = this.next();
     this.putBack();
-    return val;
+    return char;
   }
   // 迭代吃掉下一个元素
-  next(): T | "EOF" {
+  next(): T {
     let value = undefined;
     // 优先消耗之前peek的时候调用next保存的值
     if (this.peekedQueue.length) {
@@ -45,6 +48,55 @@ class PeekIterator<T = string> {
     }
     this.nextedQueue.push(value);
     return value;
+  }
+  // 迭代吃掉下一个元素，这个专门用来吃源代码，即词法分析阶段，因为next和peek本身只负责吃，不负责包装，而
+  // 词法分析需要吃char的时候，包装一下带上loc信息，所以需要单独开一个方法
+  nextSourceChar(): Char<string> {
+    // @ts-expect-error ...
+    let char: Char<string> = {};
+    let start: Location;
+    // 优先消耗之前peek的时候调用next保存的值
+    if (this.peekedQueue.length) {
+      char = this.peekedQueue.shift() as Char<string>;
+      // 之前peek保存的都消耗完毕了，直接next迭代
+    } else {
+      start = { ...this.location };
+      const { value, done } = this.iterator.next();
+      char.value = value as string;
+      // 迭代完毕，标记，返回EOF
+      if (done) {
+        this.isDone = true;
+        char.value = TokenType.EOF;
+      }
+      // 根据当前的字符进行位置的更新
+      this.updateLocation(value as string);
+      char.loc = {
+        start,
+        end: { ...this.location },
+      };
+    }
+    this.nextedQueue.push(char as T);
+    return char;
+  }
+  // 更新标记位置
+  updateLocation(char: string) {
+    switch (char) {
+      case "\t": {
+        this.location.column += 2;
+        this.location.index += 2;
+        break;
+      }
+      case "\n": {
+        this.location.line++;
+        this.location.column = 0;
+        this.location.index++;
+        break;
+      }
+      default: {
+        this.location.column++;
+        this.location.index++;
+      }
+    }
   }
   // 将刚刚next读取的字符放到peekQueue尾部中
   putBack() {

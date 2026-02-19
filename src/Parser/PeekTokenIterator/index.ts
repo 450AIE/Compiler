@@ -12,10 +12,10 @@ class PeekTokenIterator extends PeekIterator<Token> {
   // 预期吃掉下一个值为Value的Token
   nextTokenMatchByValue(value: string) {
     const token = this.next();
-    if (token === TokenType.EOF) {
+    if (token.value === TokenType.EOF) {
       throw new Error("Unexpected Error EOF");
     }
-    if (token.getValue() !== value) {
+    if (token.value !== value) {
       throw new Error(`Unexpected Error: TokenType not equal ---> ${token.getValue()} and ${value}`);
     }
     return token;
@@ -23,7 +23,7 @@ class PeekTokenIterator extends PeekIterator<Token> {
   // 预期吃掉下一个类型为Type的Token
   nextTokenMatchByType(type: TokenType) {
     const token = this.next();
-    if (token === TokenType.EOF) {
+    if (token.value === TokenType.EOF) {
       throw new Error("Unexpected Error EOF");
     }
     if (token.getType() !== type) {

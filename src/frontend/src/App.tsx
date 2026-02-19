@@ -3,7 +3,7 @@ import Lexer from "../../Lexer";
 import Parser from "../../Parser";
 import Token from "../../Lexer/Token";
 
-type TokenView = { type: string; value: string };
+type TokenView = { type: string; value: string; loc?: any };
 
 type AstView = {
   type: string | undefined;
@@ -17,10 +17,11 @@ type AstRenderMode = "data" | "tree";
 const toTokenView = (token: any): TokenView => {
   if (!token) return { type: "UNKNOWN", value: "null" };
   if (typeof token.getType === "function" && typeof token.getValue === "function") {
-    return { type: token.getType(), value: token.getValue() };
+    const loc = typeof token.getLoc === "function" ? token.getLoc() : token.loc;
+    return { type: token.getType(), value: token.getValue(), loc };
   }
   if (typeof token.type === "string" && typeof token.value === "string") {
-    return { type: token.type, value: token.value };
+    return { type: token.type, value: token.value, loc: token.loc };
   }
   return { type: "UNKNOWN", value: String(token) };
 };
