@@ -5,6 +5,16 @@ import PeekTokenIterator from "../../../../PeekTokenIterator";
 import { ASTNODE_TYPE } from "../../../../consts";
 import ObjectExpression from "..";
 
+const makeToken = (type, value) =>
+  new Token({
+    type,
+    value,
+    loc: {
+      start: { line: 1, column: 0, index: 0 },
+      end: { line: 1, column: 0, index: 0 },
+    },
+  });
+
 describe("ObjectExpression", () => {
   it("构造函数默认类型为 OBJECT_EXPRESSION", () => {
     const node = new ObjectExpression({ label: null });
@@ -12,7 +22,7 @@ describe("ObjectExpression", () => {
   });
 
   it("可以解析空对象 {}", () => {
-    const iterator = new PeekTokenIterator([new Token(TokenType.BRACKET, "{"), new Token(TokenType.BRACKET, "}")]);
+    const iterator = new PeekTokenIterator([makeToken(TokenType.BRACKET, "{"), makeToken(TokenType.BRACKET, "}")]);
     const node = ObjectExpression.parse(iterator);
 
     expect(node.getType()).toBe(ASTNODE_TYPE.OBJECT_EXPRESSION);
@@ -22,11 +32,11 @@ describe("ObjectExpression", () => {
 
   it("可以解析对象 {a:1}", () => {
     const iterator = new PeekTokenIterator([
-      new Token(TokenType.BRACKET, "{"),
-      new Token(TokenType.VARIABLE, "a"),
-      new Token(TokenType.PUNCTUATION, ":"),
-      new Token(TokenType.NUMBER, "1"),
-      new Token(TokenType.BRACKET, "}"),
+      makeToken(TokenType.BRACKET, "{"),
+      makeToken(TokenType.VARIABLE, "a"),
+      makeToken(TokenType.PUNCTUATION, ":"),
+      makeToken(TokenType.NUMBER, "1"),
+      makeToken(TokenType.BRACKET, "}"),
     ]);
     const node = ObjectExpression.parse(iterator);
 
@@ -40,15 +50,15 @@ describe("ObjectExpression", () => {
 
   it("可以解析对象 {a:1,b:2}（支持逗号分隔）", () => {
     const iterator = new PeekTokenIterator([
-      new Token(TokenType.BRACKET, "{"),
-      new Token(TokenType.VARIABLE, "a"),
-      new Token(TokenType.PUNCTUATION, ":"),
-      new Token(TokenType.NUMBER, "1"),
-      new Token(TokenType.PUNCTUATION, ","),
-      new Token(TokenType.VARIABLE, "b"),
-      new Token(TokenType.PUNCTUATION, ":"),
-      new Token(TokenType.NUMBER, "2"),
-      new Token(TokenType.BRACKET, "}"),
+      makeToken(TokenType.BRACKET, "{"),
+      makeToken(TokenType.VARIABLE, "a"),
+      makeToken(TokenType.PUNCTUATION, ":"),
+      makeToken(TokenType.NUMBER, "1"),
+      makeToken(TokenType.PUNCTUATION, ","),
+      makeToken(TokenType.VARIABLE, "b"),
+      makeToken(TokenType.PUNCTUATION, ":"),
+      makeToken(TokenType.NUMBER, "2"),
+      makeToken(TokenType.BRACKET, "}"),
     ]);
     const node = ObjectExpression.parse(iterator);
 
@@ -63,11 +73,11 @@ describe("ObjectExpression", () => {
 
   it('可以解析对象 {name:"White Album 2"}', () => {
     const iterator = new PeekTokenIterator([
-      new Token(TokenType.BRACKET, "{"),
-      new Token(TokenType.VARIABLE, "name"),
-      new Token(TokenType.PUNCTUATION, ":"),
-      new Token(TokenType.STRING, '"White Album 2"'),
-      new Token(TokenType.BRACKET, "}"),
+      makeToken(TokenType.BRACKET, "{"),
+      makeToken(TokenType.VARIABLE, "name"),
+      makeToken(TokenType.PUNCTUATION, ":"),
+      makeToken(TokenType.STRING, '"White Album 2"'),
+      makeToken(TokenType.BRACKET, "}"),
     ]);
     const node = ObjectExpression.parse(iterator);
 
@@ -80,14 +90,14 @@ describe("ObjectExpression", () => {
 
   it('可以解析对象 {"a":[1],}（支持 key 为标量与尾逗号）', () => {
     const iterator = new PeekTokenIterator([
-      new Token(TokenType.BRACKET, "{"),
-      new Token(TokenType.STRING, '"a"'),
-      new Token(TokenType.PUNCTUATION, ":"),
-      new Token(TokenType.BRACKET, "["),
-      new Token(TokenType.NUMBER, "1"),
-      new Token(TokenType.BRACKET, "]"),
-      new Token(TokenType.PUNCTUATION, ","),
-      new Token(TokenType.BRACKET, "}"),
+      makeToken(TokenType.BRACKET, "{"),
+      makeToken(TokenType.STRING, '"a"'),
+      makeToken(TokenType.PUNCTUATION, ":"),
+      makeToken(TokenType.BRACKET, "["),
+      makeToken(TokenType.NUMBER, "1"),
+      makeToken(TokenType.BRACKET, "]"),
+      makeToken(TokenType.PUNCTUATION, ","),
+      makeToken(TokenType.BRACKET, "}"),
     ]);
     const node = ObjectExpression.parse(iterator);
 

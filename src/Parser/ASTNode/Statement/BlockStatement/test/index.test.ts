@@ -5,6 +5,16 @@ import PeekTokenIterator from "../../../../PeekTokenIterator";
 import { ASTNODE_TYPE } from "../../../../consts";
 import BlockStatement from "..";
 
+const makeToken = (type: TokenType, value: string) =>
+  new Token({
+    type,
+    value,
+    loc: {
+      start: { line: 1, column: 0, index: 0 },
+      end: { line: 1, column: 0, index: 0 },
+    },
+  });
+
 describe("BlockStatement", () => {
   it("构造函数默认类型为 BLOCK", () => {
     const node = new BlockStatement({ label: null });
@@ -12,7 +22,7 @@ describe("BlockStatement", () => {
   });
 
   it("可以解析空 block: { }", () => {
-    const tokens = [new Token(TokenType.BRACKET, "{"), new Token(TokenType.BRACKET, "}")];
+    const tokens = [makeToken(TokenType.BRACKET, "{"), makeToken(TokenType.BRACKET, "}")];
     const iterator = new PeekTokenIterator(tokens);
     const node = BlockStatement.parse(iterator);
 

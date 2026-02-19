@@ -6,13 +6,23 @@ import { ASTNODE_TYPE } from "../../../../consts";
 import DeclareStatement from "..";
 import Statement from "../..";
 
+const makeToken = (type: TokenType, value: string) =>
+  new Token({
+    type,
+    value,
+    loc: {
+      start: { line: 1, column: 0, index: 0 },
+      end: { line: 1, column: 0, index: 0 },
+    },
+  });
+
 describe("DeclareStatement.parse", () => {
   it("可以解析 let a = 1", () => {
     const iterator = new PeekTokenIterator([
-      new Token(TokenType.KEYWORD, KEYWORD_TYPE.LET),
-      new Token(TokenType.VARIABLE, "a"),
-      new Token(TokenType.OPERATOR, "="),
-      new Token(TokenType.NUMBER, "1"),
+      makeToken(TokenType.KEYWORD, KEYWORD_TYPE.LET),
+      makeToken(TokenType.VARIABLE, "a"),
+      makeToken(TokenType.OPERATOR, "="),
+      makeToken(TokenType.NUMBER, "1"),
     ]);
 
     const node = DeclareStatement.parse(iterator);
@@ -26,10 +36,10 @@ describe("DeclareStatement.parse", () => {
 
   it("可以解析 const a = 1", () => {
     const iterator = new PeekTokenIterator([
-      new Token(TokenType.KEYWORD, KEYWORD_TYPE.CONST),
-      new Token(TokenType.VARIABLE, "a"),
-      new Token(TokenType.OPERATOR, "="),
-      new Token(TokenType.NUMBER, "1"),
+      makeToken(TokenType.KEYWORD, KEYWORD_TYPE.CONST),
+      makeToken(TokenType.VARIABLE, "a"),
+      makeToken(TokenType.OPERATOR, "="),
+      makeToken(TokenType.NUMBER, "1"),
     ]);
 
     const node = DeclareStatement.parse(iterator);
@@ -41,10 +51,10 @@ describe("DeclareStatement.parse", () => {
 describe("Statement.parse (declare dispatch)", () => {
   it("遇到 let 会分发为 DeclareStatement", () => {
     const iterator = new PeekTokenIterator([
-      new Token(TokenType.KEYWORD, KEYWORD_TYPE.LET),
-      new Token(TokenType.VARIABLE, "a"),
-      new Token(TokenType.OPERATOR, "="),
-      new Token(TokenType.NUMBER, "1"),
+      makeToken(TokenType.KEYWORD, KEYWORD_TYPE.LET),
+      makeToken(TokenType.VARIABLE, "a"),
+      makeToken(TokenType.OPERATOR, "="),
+      makeToken(TokenType.NUMBER, "1"),
     ]);
 
     const stmt = Statement.parse(iterator);
@@ -53,10 +63,10 @@ describe("Statement.parse (declare dispatch)", () => {
 
   it("遇到 const 会分发为 DeclareStatement", () => {
     const iterator = new PeekTokenIterator([
-      new Token(TokenType.KEYWORD, KEYWORD_TYPE.CONST),
-      new Token(TokenType.VARIABLE, "a"),
-      new Token(TokenType.OPERATOR, "="),
-      new Token(TokenType.NUMBER, "1"),
+      makeToken(TokenType.KEYWORD, KEYWORD_TYPE.CONST),
+      makeToken(TokenType.VARIABLE, "a"),
+      makeToken(TokenType.OPERATOR, "="),
+      makeToken(TokenType.NUMBER, "1"),
     ]);
 
     const stmt = Statement.parse(iterator);

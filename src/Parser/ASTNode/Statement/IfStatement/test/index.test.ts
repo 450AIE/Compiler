@@ -5,6 +5,16 @@ import PeekTokenIterator from "../../../../PeekTokenIterator";
 import { ASTNODE_TYPE } from "../../../../consts";
 import IfStatement from "..";
 
+const makeToken = (type: TokenType, value: string) =>
+  new Token({
+    type,
+    value,
+    loc: {
+      start: { line: 1, column: 0, index: 0 },
+      end: { line: 1, column: 0, index: 0 },
+    },
+  });
+
 describe("IfStatement.parse", () => {
   it("构造函数可以正确设置类型", () => {
     const node = new IfStatement({ label: null });
@@ -13,15 +23,15 @@ describe("IfStatement.parse", () => {
 
   it("可以解析 if + else block", () => {
     const iterator = new PeekTokenIterator([
-      new Token(TokenType.BRACKET, KEYWORD_TYPE.IF),
-      new Token(TokenType.BRACKET, "("),
-      new Token(TokenType.NUMBER, "1"),
-      new Token(TokenType.BRACKET, ")"),
-      new Token(TokenType.BRACKET, "{"),
-      new Token(TokenType.BRACKET, "}"),
-      new Token(TokenType.KEYWORD, KEYWORD_TYPE.ELSE),
-      new Token(TokenType.BRACKET, "{"),
-      new Token(TokenType.BRACKET, "}"),
+      makeToken(TokenType.BRACKET, KEYWORD_TYPE.IF),
+      makeToken(TokenType.BRACKET, "("),
+      makeToken(TokenType.NUMBER, "1"),
+      makeToken(TokenType.BRACKET, ")"),
+      makeToken(TokenType.BRACKET, "{"),
+      makeToken(TokenType.BRACKET, "}"),
+      makeToken(TokenType.KEYWORD, KEYWORD_TYPE.ELSE),
+      makeToken(TokenType.BRACKET, "{"),
+      makeToken(TokenType.BRACKET, "}"),
     ]);
 
     const node = IfStatement.parse(iterator);
@@ -36,12 +46,12 @@ describe("IfStatement.parse", () => {
 
   it("可以解析没有 else 的 if", () => {
     const iterator = new PeekTokenIterator([
-      new Token(TokenType.KEYWORD, KEYWORD_TYPE.IF),
-      new Token(TokenType.BRACKET, "("),
-      new Token(TokenType.NUMBER, "1"),
-      new Token(TokenType.BRACKET, ")"),
-      new Token(TokenType.BRACKET, "{"),
-      new Token(TokenType.BRACKET, "}"),
+      makeToken(TokenType.KEYWORD, KEYWORD_TYPE.IF),
+      makeToken(TokenType.BRACKET, "("),
+      makeToken(TokenType.NUMBER, "1"),
+      makeToken(TokenType.BRACKET, ")"),
+      makeToken(TokenType.BRACKET, "{"),
+      makeToken(TokenType.BRACKET, "}"),
     ]);
 
     const node = IfStatement.parse(iterator);
@@ -52,53 +62,53 @@ describe("IfStatement.parse", () => {
   });
 
   it("缺失左括号会抛错", () => {
-    const iterator = new PeekTokenIterator([new Token(TokenType.NUMBER, "1")]);
+    const iterator = new PeekTokenIterator([makeToken(TokenType.NUMBER, "1")]);
     expect(() => IfStatement.parse(iterator)).toThrowError();
   });
 
   it("缺失右括号会抛错", () => {
     const iterator = new PeekTokenIterator([
-      new Token(TokenType.KEYWORD, KEYWORD_TYPE.IF),
-      new Token(TokenType.BRACKET, "("),
-      new Token(TokenType.NUMBER, "1"),
-      new Token(TokenType.BRACKET, "{"),
-      new Token(TokenType.BRACKET, "}"),
+      makeToken(TokenType.KEYWORD, KEYWORD_TYPE.IF),
+      makeToken(TokenType.BRACKET, "("),
+      makeToken(TokenType.NUMBER, "1"),
+      makeToken(TokenType.BRACKET, "{"),
+      makeToken(TokenType.BRACKET, "}"),
     ]);
     expect(() => IfStatement.parse(iterator)).toThrowError();
   });
 
   it("else 后不是 block 会抛错", () => {
     const iterator = new PeekTokenIterator([
-      new Token(TokenType.KEYWORD, KEYWORD_TYPE.IF),
-      new Token(TokenType.BRACKET, "("),
-      new Token(TokenType.NUMBER, "1"),
-      new Token(TokenType.BRACKET, ")"),
-      new Token(TokenType.BRACKET, "{"),
-      new Token(TokenType.BRACKET, "}"),
-      new Token(TokenType.KEYWORD, KEYWORD_TYPE.ELSE),
-      new Token(TokenType.VARIABLE, "x"),
+      makeToken(TokenType.KEYWORD, KEYWORD_TYPE.IF),
+      makeToken(TokenType.BRACKET, "("),
+      makeToken(TokenType.NUMBER, "1"),
+      makeToken(TokenType.BRACKET, ")"),
+      makeToken(TokenType.BRACKET, "{"),
+      makeToken(TokenType.BRACKET, "}"),
+      makeToken(TokenType.KEYWORD, KEYWORD_TYPE.ELSE),
+      makeToken(TokenType.VARIABLE, "x"),
     ]);
     expect(() => IfStatement.parse(iterator)).toThrowError();
   });
 
   it("可以解析 else if", () => {
     const iterator = new PeekTokenIterator([
-      new Token(TokenType.KEYWORD, KEYWORD_TYPE.IF),
-      new Token(TokenType.BRACKET, "("),
-      new Token(TokenType.NUMBER, "1"),
-      new Token(TokenType.BRACKET, ")"),
-      new Token(TokenType.BRACKET, "{"),
-      new Token(TokenType.BRACKET, "}"),
-      new Token(TokenType.KEYWORD, KEYWORD_TYPE.ELSE),
-      new Token(TokenType.KEYWORD, KEYWORD_TYPE.IF),
-      new Token(TokenType.BRACKET, "("),
-      new Token(TokenType.NUMBER, "2"),
-      new Token(TokenType.BRACKET, ")"),
-      new Token(TokenType.BRACKET, "{"),
-      new Token(TokenType.BRACKET, "}"),
-      new Token(TokenType.KEYWORD, KEYWORD_TYPE.ELSE),
-      new Token(TokenType.BRACKET, "{"),
-      new Token(TokenType.BRACKET, "}"),
+      makeToken(TokenType.KEYWORD, KEYWORD_TYPE.IF),
+      makeToken(TokenType.BRACKET, "("),
+      makeToken(TokenType.NUMBER, "1"),
+      makeToken(TokenType.BRACKET, ")"),
+      makeToken(TokenType.BRACKET, "{"),
+      makeToken(TokenType.BRACKET, "}"),
+      makeToken(TokenType.KEYWORD, KEYWORD_TYPE.ELSE),
+      makeToken(TokenType.KEYWORD, KEYWORD_TYPE.IF),
+      makeToken(TokenType.BRACKET, "("),
+      makeToken(TokenType.NUMBER, "2"),
+      makeToken(TokenType.BRACKET, ")"),
+      makeToken(TokenType.BRACKET, "{"),
+      makeToken(TokenType.BRACKET, "}"),
+      makeToken(TokenType.KEYWORD, KEYWORD_TYPE.ELSE),
+      makeToken(TokenType.BRACKET, "{"),
+      makeToken(TokenType.BRACKET, "}"),
     ]);
     const node = IfStatement.parse(iterator);
     const children = node.getChildren();

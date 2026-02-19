@@ -5,6 +5,16 @@ import PeekTokenIterator from "../../../../PeekTokenIterator";
 import { ASTNODE_TYPE } from "../../../../consts";
 import ArrayExpression from "..";
 
+const makeToken = (type, value) =>
+  new Token({
+    type,
+    value,
+    loc: {
+      start: { line: 1, column: 0, index: 0 },
+      end: { line: 1, column: 0, index: 0 },
+    },
+  });
+
 describe("ArrayExpression", () => {
   it("构造函数默认类型为 ARRAY_EXPRESSION", () => {
     const node = new ArrayExpression({ label: null });
@@ -12,7 +22,7 @@ describe("ArrayExpression", () => {
   });
 
   it("可以解析空数组 []", () => {
-    const iterator = new PeekTokenIterator([new Token(TokenType.BRACKET, "["), new Token(TokenType.BRACKET, "]")]);
+    const iterator = new PeekTokenIterator([makeToken(TokenType.BRACKET, "["), makeToken(TokenType.BRACKET, "]")]);
     const node = ArrayExpression.parse(iterator);
 
     expect(node.getType()).toBe(ASTNODE_TYPE.ARRAY_EXPRESSION);
@@ -22,13 +32,13 @@ describe("ArrayExpression", () => {
 
   it("可以解析数组 [1,2,3]", () => {
     const iterator = new PeekTokenIterator([
-      new Token(TokenType.BRACKET, "["),
-      new Token(TokenType.NUMBER, "1"),
-      new Token(TokenType.PUNCTUATION, ","),
-      new Token(TokenType.NUMBER, "2"),
-      new Token(TokenType.PUNCTUATION, ","),
-      new Token(TokenType.NUMBER, "3"),
-      new Token(TokenType.BRACKET, "]"),
+      makeToken(TokenType.BRACKET, "["),
+      makeToken(TokenType.NUMBER, "1"),
+      makeToken(TokenType.PUNCTUATION, ","),
+      makeToken(TokenType.NUMBER, "2"),
+      makeToken(TokenType.PUNCTUATION, ","),
+      makeToken(TokenType.NUMBER, "3"),
+      makeToken(TokenType.BRACKET, "]"),
     ]);
     const node = ArrayExpression.parse(iterator);
 
@@ -43,9 +53,9 @@ describe("ArrayExpression", () => {
 
   it('可以解析数组含字符串 ["White Album 2"]', () => {
     const iterator = new PeekTokenIterator([
-      new Token(TokenType.BRACKET, "["),
-      new Token(TokenType.STRING, '"White Album 2"'),
-      new Token(TokenType.BRACKET, "]"),
+      makeToken(TokenType.BRACKET, "["),
+      makeToken(TokenType.STRING, '"White Album 2"'),
+      makeToken(TokenType.BRACKET, "]"),
     ]);
     const node = ArrayExpression.parse(iterator);
 
@@ -57,21 +67,21 @@ describe("ArrayExpression", () => {
 
   it("可以解析混合与嵌套元素 [1, 2+3, [4], a=5]", () => {
     const iterator = new PeekTokenIterator([
-      new Token(TokenType.BRACKET, "["),
-      new Token(TokenType.NUMBER, "1"),
-      new Token(TokenType.PUNCTUATION, ","),
-      new Token(TokenType.NUMBER, "2"),
-      new Token(TokenType.OPERATOR, "+"),
-      new Token(TokenType.NUMBER, "3"),
-      new Token(TokenType.PUNCTUATION, ","),
-      new Token(TokenType.BRACKET, "["),
-      new Token(TokenType.NUMBER, "4"),
-      new Token(TokenType.BRACKET, "]"),
-      new Token(TokenType.PUNCTUATION, ","),
-      new Token(TokenType.VARIABLE, "a"),
-      new Token(TokenType.OPERATOR, "="),
-      new Token(TokenType.NUMBER, "5"),
-      new Token(TokenType.BRACKET, "]"),
+      makeToken(TokenType.BRACKET, "["),
+      makeToken(TokenType.NUMBER, "1"),
+      makeToken(TokenType.PUNCTUATION, ","),
+      makeToken(TokenType.NUMBER, "2"),
+      makeToken(TokenType.OPERATOR, "+"),
+      makeToken(TokenType.NUMBER, "3"),
+      makeToken(TokenType.PUNCTUATION, ","),
+      makeToken(TokenType.BRACKET, "["),
+      makeToken(TokenType.NUMBER, "4"),
+      makeToken(TokenType.BRACKET, "]"),
+      makeToken(TokenType.PUNCTUATION, ","),
+      makeToken(TokenType.VARIABLE, "a"),
+      makeToken(TokenType.OPERATOR, "="),
+      makeToken(TokenType.NUMBER, "5"),
+      makeToken(TokenType.BRACKET, "]"),
     ]);
     const node = ArrayExpression.parse(iterator);
 

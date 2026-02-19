@@ -1,13 +1,17 @@
 import AlphabetChecker from "../AlphabetChecker";
 import { KEYWORD_TYPE, TokenType } from "../consts";
 import PeekIterator from "../PeekIterator";
+import { TokenLocationRange } from "../PeekIterator/types";
+import { TokenProps } from "./types";
 
 class Token {
-  public type: TokenType;
-  public value: string;
-  constructor(type: TokenType, value: string) {
+  private type: TokenType;
+  private value: string;
+  public loc: TokenLocationRange;
+  constructor({ type, value, loc }: TokenProps) {
     this.type = type;
     this.value = value;
+    this.loc = loc;
   }
   getType() {
     return this.type;
@@ -27,8 +31,17 @@ class Token {
   static makeString(iterator: PeekIterator) {
     let state = 0;
     let s = "";
+    let startLoc = null;
+    let endLoc = null;
     while (iterator.hasNext()) {
-      const char = iterator.next();
+      const charToken = iterator.nextSourceChar();
+      const char = charToken.value;
+
+      if (startLoc === null) {
+        startLoc = charToken.loc.start;
+      }
+      endLoc = charToken.loc.end;
+
       switch (state) {
         case 0: {
           if (char === '"') {
@@ -42,12 +55,20 @@ class Token {
         case 1: {
           s += char;
           if (char !== '"') continue;
-          return new Token(TokenType.STRING, s);
+          return new Token({
+            type: TokenType.STRING,
+            value: s,
+            loc: { start: startLoc, end: endLoc },
+          });
         }
         case 2: {
           s += char;
           if (char !== "'") continue;
-          return new Token(TokenType.STRING, s);
+          return new Token({
+            type: TokenType.STRING,
+            value: s,
+            loc: { start: startLoc, end: endLoc },
+          });
         }
       }
     }
@@ -56,8 +77,15 @@ class Token {
   static makeNumber(iterator: PeekIterator) {
     let state = 0;
     let s = "";
+    let startLoc = null;
     while (iterator.hasNext()) {
-      const char = iterator.next();
+      const charToken = iterator.nextSourceChar();
+      const char = charToken.value;
+
+      if (startLoc === null) {
+        startLoc = charToken.loc.start;
+      }
+
       switch (state) {
         case 0: {
           if (["-", "+"].includes(char)) {
@@ -83,8 +111,13 @@ class Token {
             state = 2;
           } else {
             // 发现这次吃的这个char不是数字，说明之前吃的全部字符可以凑成一个数字，但是这个不是，所以要要放回去
+            const end = charToken.loc.start;
             iterator.putBack();
-            return new Token(TokenType.NUMBER, s);
+            return new Token({
+              type: TokenType.NUMBER,
+              value: s,
+              loc: { start: startLoc, end },
+            });
           }
           s += char;
           break;
@@ -106,8 +139,13 @@ class Token {
             continue;
           }
           // 发现这次吃的这个char不是数字，说明之前吃的全部字符可以凑成一个数字，但是这个不是，所以要要放回去
+          const end = charToken.loc.start;
           iterator.putBack();
-          return new Token(TokenType.NUMBER, s);
+          return new Token({
+            type: TokenType.NUMBER,
+            value: s,
+            loc: { start: startLoc, end },
+          });
         }
         case 5: {
           if (AlphabetChecker.isNumber(char)) {
@@ -118,8 +156,13 @@ class Token {
             throw new Error(`Unexpected token ${char}`);
           }
           // 发现这次吃的这个char不是数字，说明之前吃的全部字符可以凑成一个数字，但是这个不是，所以要要放回去
+          const end = charToken.loc.start;
           iterator.putBack();
-          return new Token(TokenType.NUMBER, s);
+          return new Token({
+            type: TokenType.NUMBER,
+            value: s,
+            loc: { start: startLoc, end },
+          });
         }
       }
     }
@@ -128,8 +171,16 @@ class Token {
   static makeOperator(iterator: PeekIterator) {
     let state = 0;
     let s = "";
+    let startLoc = null;
+    let endLoc = null;
     while (iterator.hasNext()) {
-      const char = iterator.next();
+      const charToken = iterator.nextSourceChar();
+      const char = charToken.value;
+
+      if (startLoc === null) {
+        startLoc = charToken.loc.start;
+      }
+      endLoc = charToken.loc.end;
       switch (state) {
         case 0: {
           // if ([",", ";"].includes(char)) return new Token(TokenType.OPERATOR, char);
@@ -190,89 +241,145 @@ class Token {
           if (["+", "="].includes(char)) {
             s += char;
           } else {
+            endLoc = charToken.loc.start;
             iterator.putBack();
           }
-          return new Token(TokenType.OPERATOR, s);
+          return new Token({
+            type: TokenType.OPERATOR,
+            value: s,
+            loc: { start: startLoc, end: endLoc },
+          });
         }
         case 2: {
           if (["-", "="].includes(char)) {
             s += char;
           } else {
+            endLoc = charToken.loc.start;
             iterator.putBack();
           }
-          return new Token(TokenType.OPERATOR, s);
+          return new Token({
+            type: TokenType.OPERATOR,
+            value: s,
+            loc: { start: startLoc, end: endLoc },
+          });
         }
         case 3: {
           if (char === "=") {
             s += char;
           } else {
+            endLoc = charToken.loc.start;
             iterator.putBack();
           }
-          return new Token(TokenType.OPERATOR, s);
+          return new Token({
+            type: TokenType.OPERATOR,
+            value: s,
+            loc: { start: startLoc, end: endLoc },
+          });
         }
         case 4: {
           if (char === "=") {
             s += char;
           } else {
+            endLoc = charToken.loc.start;
             iterator.putBack();
           }
-          return new Token(TokenType.OPERATOR, s);
+          return new Token({
+            type: TokenType.OPERATOR,
+            value: s,
+            loc: { start: startLoc, end: endLoc },
+          });
         }
         case 5: {
           if ([">", "="].includes(char)) {
             s += char;
           } else {
+            endLoc = charToken.loc.start;
             iterator.putBack();
           }
-          return new Token(TokenType.OPERATOR, s);
+          return new Token({
+            type: TokenType.OPERATOR,
+            value: s,
+            loc: { start: startLoc, end: endLoc },
+          });
         }
         case 6: {
           if (["<", "="].includes(char)) {
             s += char;
           } else {
+            endLoc = charToken.loc.start;
             iterator.putBack();
           }
-          return new Token(TokenType.OPERATOR, s);
+          return new Token({
+            type: TokenType.OPERATOR,
+            value: s,
+            loc: { start: startLoc, end: endLoc },
+          });
         }
         case 7: {
           if (char === "") {
             s += char;
           } else {
+            endLoc = charToken.loc.start;
             iterator.putBack();
           }
-          return new Token(TokenType.OPERATOR, s);
+          return new Token({
+            type: TokenType.OPERATOR,
+            value: s,
+            loc: { start: startLoc, end: endLoc },
+          });
         }
         case 8: {
           if (char === "!") {
             s += char;
           } else {
+            endLoc = charToken.loc.start;
             iterator.putBack();
           }
-          return new Token(TokenType.OPERATOR, s);
+          return new Token({
+            type: TokenType.OPERATOR,
+            value: s,
+            loc: { start: startLoc, end: endLoc },
+          });
         }
         case 9: {
           if (["&", "="].includes(char)) {
             s += char;
           }
-          return new Token(TokenType.OPERATOR, s);
+          return new Token({
+            type: TokenType.OPERATOR,
+            value: s,
+            loc: { start: startLoc, end: endLoc },
+          });
         }
         case 10: {
           if (["|", "="].includes(char)) {
             s += char;
           }
-          return new Token(TokenType.OPERATOR, s);
+          return new Token({
+            type: TokenType.OPERATOR,
+            value: s,
+            loc: { start: startLoc, end: endLoc },
+          });
         }
         case 11: {
           if (char === "^") {
             s += char;
           }
-          return new Token(TokenType.OPERATOR, s);
+          return new Token({
+            type: TokenType.OPERATOR,
+            value: s,
+            loc: { start: startLoc, end: endLoc },
+          });
         }
         case 12: {
           if (char === "%") {
             s += char;
           }
-          return new Token(TokenType.OPERATOR, s);
+          return new Token({
+            type: TokenType.OPERATOR,
+            value: s,
+            loc: { start: startLoc, end: endLoc },
+          });
         }
       }
       throw new Error(`Syntax Error: ${s} + ${char}`);
@@ -282,8 +389,15 @@ class Token {
   static makeVariableOrKeyword(iterator: PeekIterator) {
     let state = 0;
     let s = "";
+    let startLoc = null;
     while (iterator.hasNext()) {
-      const char = iterator.next();
+      const charToken = iterator.nextSourceChar();
+      const char = charToken.value;
+
+      if (startLoc === null) {
+        startLoc = charToken.loc.start;
+      }
+
       switch (state) {
         case 0: {
           if (AlphabetChecker.isIdentifierFirstCharRegExp(char)) {
@@ -299,8 +413,13 @@ class Token {
             s += char;
             continue;
           }
+          const end = charToken.loc.start;
           iterator.putBack();
-          return new Token(TokenType.VARIABLE, s);
+          return new Token({
+            type: TokenType.VARIABLE,
+            value: s,
+            loc: { start: startLoc, end },
+          });
         }
         case 2: {
           if (AlphabetChecker.isIdentifierNotFirstCharRegExp(char)) {
@@ -308,10 +427,20 @@ class Token {
             s += char;
             continue;
           }
+          const end = charToken.loc.start;
           iterator.putBack();
           // 遇到不是合法的标识符字符了，现在判断s是否是关键字，如果不是，就是变量
-          if (KEYWORD_TYPE[s.toUpperCase()]) return new Token(TokenType.KEYWORD, s);
-          return new Token(TokenType.VARIABLE, s);
+          if (KEYWORD_TYPE[s.toUpperCase()])
+            return new Token({
+              type: TokenType.KEYWORD,
+              value: s,
+              loc: { start: startLoc, end },
+            });
+          return new Token({
+            type: TokenType.VARIABLE,
+            value: s,
+            loc: { start: startLoc, end },
+          });
         }
       }
     }

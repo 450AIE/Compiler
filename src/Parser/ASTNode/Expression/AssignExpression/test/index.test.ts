@@ -5,6 +5,16 @@ import PeekTokenIterator from "../../../../PeekTokenIterator";
 import { ASTNODE_TYPE } from "../../../../consts";
 import AssignExpression from "..";
 
+const makeToken = (type: TokenType, value: string) =>
+  new Token({
+    type,
+    value,
+    loc: {
+      start: { line: 1, column: 0, index: 0 },
+      end: { line: 1, column: 0, index: 0 },
+    },
+  });
+
 describe("AssignExpression", () => {
   it("构造函数可以正确设置类型", () => {
     const node = new AssignExpression({ label: null });
@@ -13,9 +23,9 @@ describe("AssignExpression", () => {
 
   it("可以解析 a = 1", () => {
     const tokens = [
-      new Token(TokenType.VARIABLE, "a"),
-      new Token(TokenType.OPERATOR, "="),
-      new Token(TokenType.NUMBER, "1"),
+      makeToken(TokenType.VARIABLE, "a"),
+      makeToken(TokenType.OPERATOR, "="),
+      makeToken(TokenType.NUMBER, "1"),
     ];
     const iterator = new PeekTokenIterator(tokens);
     const node = AssignExpression.parse(iterator);

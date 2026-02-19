@@ -4,7 +4,7 @@ import { Char, Location } from "./types";
 /**
  * 封装一个支持peek操作的迭代器
  */
-class PeekIterator<T = Char<string>> {
+class PeekIterator<T = string> {
   private iterator: Iterator<T, undefined>;
   // 调用peek后，将读取的元素放入peekedQueue，链表性能更好，为了简单这里用数组
   private peekedQueue: T[];

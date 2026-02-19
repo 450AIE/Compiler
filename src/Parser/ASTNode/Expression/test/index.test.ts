@@ -5,8 +5,18 @@ import PeekTokenIterator from "../../../PeekTokenIterator";
 import { ASTNODE_TYPE } from "../../../consts";
 import Expression from "..";
 
+const makeToken = (type: TokenType, value: string) =>
+  new Token({
+    type,
+    value,
+    loc: {
+      start: { line: 1, column: 0, index: 0 },
+      end: { line: 1, column: 0, index: 0 },
+    },
+  });
+
 describe("Expression", () => {
-  const getRoot = (node: { getChildren: () => unknown[] }) => node.getChildren()[0];
+  const getRoot = (node: any) => node.getChildren()[0] as any;
 
   it("构造函数默认类型为 EXPRESSION", () => {
     const node = new Expression({ label: null });
@@ -15,9 +25,9 @@ describe("Expression", () => {
 
   it("可以解析赋值表达式 a = 1", () => {
     const tokens = [
-      new Token(TokenType.VARIABLE, "a"),
-      new Token(TokenType.OPERATOR, "="),
-      new Token(TokenType.NUMBER, "1"),
+      makeToken(TokenType.VARIABLE, "a"),
+      makeToken(TokenType.OPERATOR, "="),
+      makeToken(TokenType.NUMBER, "1"),
     ];
     const iterator = new PeekTokenIterator(tokens);
     const node = Expression.parse(iterator);
@@ -27,12 +37,12 @@ describe("Expression", () => {
 
   it("可以解析函数调用 foo(a,b)", () => {
     const tokens = [
-      new Token(TokenType.VARIABLE, "foo"),
-      new Token(TokenType.BRACKET, "("),
-      new Token(TokenType.VARIABLE, "a"),
-      new Token(TokenType.PUNCTUATION, ","),
-      new Token(TokenType.VARIABLE, "b"),
-      new Token(TokenType.BRACKET, ")"),
+      makeToken(TokenType.VARIABLE, "foo"),
+      makeToken(TokenType.BRACKET, "("),
+      makeToken(TokenType.VARIABLE, "a"),
+      makeToken(TokenType.PUNCTUATION, ","),
+      makeToken(TokenType.VARIABLE, "b"),
+      makeToken(TokenType.BRACKET, ")"),
     ];
     const iterator = new PeekTokenIterator(tokens);
     const node = Expression.parse(iterator);
@@ -46,11 +56,11 @@ describe("Expression", () => {
 
   it("可以解析数组表达式 [1,2]", () => {
     const tokens = [
-      new Token(TokenType.BRACKET, "["),
-      new Token(TokenType.NUMBER, "1"),
-      new Token(TokenType.PUNCTUATION, ","),
-      new Token(TokenType.NUMBER, "2"),
-      new Token(TokenType.BRACKET, "]"),
+      makeToken(TokenType.BRACKET, "["),
+      makeToken(TokenType.NUMBER, "1"),
+      makeToken(TokenType.PUNCTUATION, ","),
+      makeToken(TokenType.NUMBER, "2"),
+      makeToken(TokenType.BRACKET, "]"),
     ];
     const iterator = new PeekTokenIterator(tokens);
     const node = Expression.parse(iterator);
@@ -61,11 +71,11 @@ describe("Expression", () => {
 
   it("可以解析对象表达式 {a:1}", () => {
     const tokens = [
-      new Token(TokenType.BRACKET, "{"),
-      new Token(TokenType.VARIABLE, "a"),
-      new Token(TokenType.PUNCTUATION, ":"),
-      new Token(TokenType.NUMBER, "1"),
-      new Token(TokenType.BRACKET, "}"),
+      makeToken(TokenType.BRACKET, "{"),
+      makeToken(TokenType.VARIABLE, "a"),
+      makeToken(TokenType.PUNCTUATION, ":"),
+      makeToken(TokenType.NUMBER, "1"),
+      makeToken(TokenType.BRACKET, "}"),
     ];
     const iterator = new PeekTokenIterator(tokens);
     const node = Expression.parse(iterator);
@@ -76,15 +86,15 @@ describe("Expression", () => {
 
   it("可以解析对象表达式 {a:1,b:2}", () => {
     const tokens = [
-      new Token(TokenType.BRACKET, "{"),
-      new Token(TokenType.VARIABLE, "a"),
-      new Token(TokenType.PUNCTUATION, ":"),
-      new Token(TokenType.NUMBER, "1"),
-      new Token(TokenType.PUNCTUATION, ","),
-      new Token(TokenType.VARIABLE, "b"),
-      new Token(TokenType.PUNCTUATION, ":"),
-      new Token(TokenType.NUMBER, "2"),
-      new Token(TokenType.BRACKET, "}"),
+      makeToken(TokenType.BRACKET, "{"),
+      makeToken(TokenType.VARIABLE, "a"),
+      makeToken(TokenType.PUNCTUATION, ":"),
+      makeToken(TokenType.NUMBER, "1"),
+      makeToken(TokenType.PUNCTUATION, ","),
+      makeToken(TokenType.VARIABLE, "b"),
+      makeToken(TokenType.PUNCTUATION, ":"),
+      makeToken(TokenType.NUMBER, "2"),
+      makeToken(TokenType.BRACKET, "}"),
     ];
     const iterator = new PeekTokenIterator(tokens);
     const node = Expression.parse(iterator);
@@ -95,9 +105,9 @@ describe("Expression", () => {
 
   it("可以解析简单表达式 1 + 2", () => {
     const tokens = [
-      new Token(TokenType.NUMBER, "1"),
-      new Token(TokenType.OPERATOR, "+"),
-      new Token(TokenType.NUMBER, "2"),
+      makeToken(TokenType.NUMBER, "1"),
+      makeToken(TokenType.OPERATOR, "+"),
+      makeToken(TokenType.NUMBER, "2"),
     ];
     const iterator = new PeekTokenIterator(tokens);
     const node = Expression.parse(iterator);
@@ -109,11 +119,11 @@ describe("Expression", () => {
 
   it("可以解析带括号的表达式 (1+2)", () => {
     const tokens = [
-      new Token(TokenType.BRACKET, "("),
-      new Token(TokenType.NUMBER, "1"),
-      new Token(TokenType.OPERATOR, "+"),
-      new Token(TokenType.NUMBER, "2"),
-      new Token(TokenType.BRACKET, ")"),
+      makeToken(TokenType.BRACKET, "("),
+      makeToken(TokenType.NUMBER, "1"),
+      makeToken(TokenType.OPERATOR, "+"),
+      makeToken(TokenType.NUMBER, "2"),
+      makeToken(TokenType.BRACKET, ")"),
     ];
     const iterator = new PeekTokenIterator(tokens);
     const node = Expression.parse(iterator);
@@ -124,11 +134,11 @@ describe("Expression", () => {
 
   it("可以解析乘法优先级 1+2*3", () => {
     const tokens = [
-      new Token(TokenType.NUMBER, "1"),
-      new Token(TokenType.OPERATOR, "+"),
-      new Token(TokenType.NUMBER, "2"),
-      new Token(TokenType.OPERATOR, "*"),
-      new Token(TokenType.NUMBER, "3"),
+      makeToken(TokenType.NUMBER, "1"),
+      makeToken(TokenType.OPERATOR, "+"),
+      makeToken(TokenType.NUMBER, "2"),
+      makeToken(TokenType.OPERATOR, "*"),
+      makeToken(TokenType.NUMBER, "3"),
     ];
     const iterator = new PeekTokenIterator(tokens);
     const node = Expression.parse(iterator);
@@ -144,13 +154,13 @@ describe("Expression", () => {
 
   it("可以解析括号改变优先级 (1+2)*3", () => {
     const tokens = [
-      new Token(TokenType.BRACKET, "("),
-      new Token(TokenType.NUMBER, "1"),
-      new Token(TokenType.OPERATOR, "+"),
-      new Token(TokenType.NUMBER, "2"),
-      new Token(TokenType.BRACKET, ")"),
-      new Token(TokenType.OPERATOR, "*"),
-      new Token(TokenType.NUMBER, "3"),
+      makeToken(TokenType.BRACKET, "("),
+      makeToken(TokenType.NUMBER, "1"),
+      makeToken(TokenType.OPERATOR, "+"),
+      makeToken(TokenType.NUMBER, "2"),
+      makeToken(TokenType.BRACKET, ")"),
+      makeToken(TokenType.OPERATOR, "*"),
+      makeToken(TokenType.NUMBER, "3"),
     ];
     const iterator = new PeekTokenIterator(tokens);
     const node = Expression.parse(iterator);
@@ -166,17 +176,17 @@ describe("Expression", () => {
 
   it("可以解析嵌套括号 1*(2+(3*4))", () => {
     const tokens = [
-      new Token(TokenType.NUMBER, "1"),
-      new Token(TokenType.OPERATOR, "*"),
-      new Token(TokenType.BRACKET, "("),
-      new Token(TokenType.NUMBER, "2"),
-      new Token(TokenType.OPERATOR, "+"),
-      new Token(TokenType.BRACKET, "("),
-      new Token(TokenType.NUMBER, "3"),
-      new Token(TokenType.OPERATOR, "*"),
-      new Token(TokenType.NUMBER, "4"),
-      new Token(TokenType.BRACKET, ")"),
-      new Token(TokenType.BRACKET, ")"),
+      makeToken(TokenType.NUMBER, "1"),
+      makeToken(TokenType.OPERATOR, "*"),
+      makeToken(TokenType.BRACKET, "("),
+      makeToken(TokenType.NUMBER, "2"),
+      makeToken(TokenType.OPERATOR, "+"),
+      makeToken(TokenType.BRACKET, "("),
+      makeToken(TokenType.NUMBER, "3"),
+      makeToken(TokenType.OPERATOR, "*"),
+      makeToken(TokenType.NUMBER, "4"),
+      makeToken(TokenType.BRACKET, ")"),
+      makeToken(TokenType.BRACKET, ")"),
     ];
     const iterator = new PeekTokenIterator(tokens);
     const node = Expression.parse(iterator);
@@ -188,17 +198,17 @@ describe("Expression", () => {
 
   it("可以解析更复杂的优先级 1+2*3==7&&0==1", () => {
     const tokens = [
-      new Token(TokenType.NUMBER, "1"),
-      new Token(TokenType.OPERATOR, "+"),
-      new Token(TokenType.NUMBER, "2"),
-      new Token(TokenType.OPERATOR, "*"),
-      new Token(TokenType.NUMBER, "3"),
-      new Token(TokenType.OPERATOR, "=="),
-      new Token(TokenType.NUMBER, "7"),
-      new Token(TokenType.OPERATOR, "&&"),
-      new Token(TokenType.NUMBER, "0"),
-      new Token(TokenType.OPERATOR, "=="),
-      new Token(TokenType.NUMBER, "1"),
+      makeToken(TokenType.NUMBER, "1"),
+      makeToken(TokenType.OPERATOR, "+"),
+      makeToken(TokenType.NUMBER, "2"),
+      makeToken(TokenType.OPERATOR, "*"),
+      makeToken(TokenType.NUMBER, "3"),
+      makeToken(TokenType.OPERATOR, "=="),
+      makeToken(TokenType.NUMBER, "7"),
+      makeToken(TokenType.OPERATOR, "&&"),
+      makeToken(TokenType.NUMBER, "0"),
+      makeToken(TokenType.OPERATOR, "=="),
+      makeToken(TokenType.NUMBER, "1"),
     ];
     const iterator = new PeekTokenIterator(tokens);
     const node = Expression.parse(iterator);
@@ -211,10 +221,10 @@ describe("Expression", () => {
 
   it("缺失右括号会抛错", () => {
     const tokens = [
-      new Token(TokenType.BRACKET, "("),
-      new Token(TokenType.NUMBER, "1"),
-      new Token(TokenType.OPERATOR, "+"),
-      new Token(TokenType.NUMBER, "2"),
+      makeToken(TokenType.BRACKET, "("),
+      makeToken(TokenType.NUMBER, "1"),
+      makeToken(TokenType.OPERATOR, "+"),
+      makeToken(TokenType.NUMBER, "2"),
     ];
     const iterator = new PeekTokenIterator(tokens);
     expect(() => Expression.parse(iterator)).toThrowError();
@@ -222,9 +232,9 @@ describe("Expression", () => {
 
   it("遇到未支持的运算符会抛错", () => {
     const tokens = [
-      new Token(TokenType.NUMBER, "1"),
-      new Token(TokenType.OPERATOR, "***"),
-      new Token(TokenType.NUMBER, "2"),
+      makeToken(TokenType.NUMBER, "1"),
+      makeToken(TokenType.OPERATOR, "***"),
+      makeToken(TokenType.NUMBER, "2"),
     ];
     const iterator = new PeekTokenIterator(tokens);
     expect(() => Expression.parse(iterator)).toThrowError();

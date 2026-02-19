@@ -11,7 +11,17 @@ describe("Token.makeNumber", () => {
     const token = result as Token;
     expect(token.type).toBe(TokenType.NUMBER);
     expect(token.value).toBe("123");
-    expect(iterator.peek()).toBe(" ");
+    expect(token.loc).toEqual({
+      start: { line: 1, column: 0, index: 0 },
+      end: { line: 1, column: 3, index: 3 },
+    });
+    expect(iterator.peek()).toEqual({
+      value: " ",
+      loc: {
+        start: { line: 1, column: 3, index: 3 },
+        end: { line: 1, column: 4, index: 4 },
+      },
+    });
   });
 
   it("可以解析带负号的整数", () => {
@@ -21,7 +31,17 @@ describe("Token.makeNumber", () => {
     const token = result as Token;
     expect(token.type).toBe(TokenType.NUMBER);
     expect(token.value).toBe("-5");
-    expect(iterator.peek()).toBe(";");
+    expect(token.loc).toEqual({
+      start: { line: 1, column: 0, index: 0 },
+      end: { line: 1, column: 2, index: 2 },
+    });
+    expect(iterator.peek()).toEqual({
+      value: ";",
+      loc: {
+        start: { line: 1, column: 2, index: 2 },
+        end: { line: 1, column: 3, index: 3 },
+      },
+    });
   });
 
   it("可以解析带正号的整数", () => {
@@ -31,7 +51,17 @@ describe("Token.makeNumber", () => {
     const token = result as Token;
     expect(token.type).toBe(TokenType.NUMBER);
     expect(token.value).toBe("+6");
-    expect(iterator.peek()).toBe("+");
+    expect(token.loc).toEqual({
+      start: { line: 1, column: 0, index: 0 },
+      end: { line: 1, column: 2, index: 2 },
+    });
+    expect(iterator.peek()).toEqual({
+      value: "+",
+      loc: {
+        start: { line: 1, column: 2, index: 2 },
+        end: { line: 1, column: 3, index: 3 },
+      },
+    });
   });
 
   it("可以解析小数", () => {
@@ -41,7 +71,17 @@ describe("Token.makeNumber", () => {
     const token = result as Token;
     expect(token.type).toBe(TokenType.NUMBER);
     expect(token.value).toBe("0.5");
-    expect(iterator.peek()).toBe(" ");
+    expect(token.loc).toEqual({
+      start: { line: 1, column: 0, index: 0 },
+      end: { line: 1, column: 3, index: 3 },
+    });
+    expect(iterator.peek()).toEqual({
+      value: " ",
+      loc: {
+        start: { line: 1, column: 3, index: 3 },
+        end: { line: 1, column: 4, index: 4 },
+      },
+    });
   });
 
   it("可以解析非零整数部分的小数", () => {
@@ -51,7 +91,17 @@ describe("Token.makeNumber", () => {
     const token = result as Token;
     expect(token.type).toBe(TokenType.NUMBER);
     expect(token.value).toBe("12.34");
-    expect(iterator.peek()).toBe(")");
+    expect(token.loc).toEqual({
+      start: { line: 1, column: 0, index: 0 },
+      end: { line: 1, column: 5, index: 5 },
+    });
+    expect(iterator.peek()).toEqual({
+      value: ")",
+      loc: {
+        start: { line: 1, column: 5, index: 5 },
+        end: { line: 1, column: 6, index: 6 },
+      },
+    });
   });
 
   it("前导 0 的非法整数会抛错", () => {
@@ -73,6 +123,10 @@ describe("Token.makeString", () => {
     const token = result as Token;
     expect(token.type).toBe(TokenType.STRING);
     expect(token.value).toBe('"hi"');
+    expect(token.loc).toEqual({
+      start: { line: 1, column: 0, index: 0 },
+      end: { line: 1, column: 4, index: 4 },
+    });
     expect(iterator.peek()).toBe(" ");
   });
 
@@ -83,6 +137,10 @@ describe("Token.makeString", () => {
     const token = result as Token;
     expect(token.type).toBe(TokenType.STRING);
     expect(token.value).toBe("'hi'");
+    expect(token.loc).toEqual({
+      start: { line: 1, column: 0, index: 0 },
+      end: { line: 1, column: 4, index: 4 },
+    });
     expect(iterator.peek()).toBe(";");
   });
 
@@ -93,6 +151,10 @@ describe("Token.makeString", () => {
     const token = result as Token;
     expect(token.type).toBe(TokenType.STRING);
     expect(token.value).toBe('""');
+    expect(token.loc).toEqual({
+      start: { line: 1, column: 0, index: 0 },
+      end: { line: 1, column: 2, index: 2 },
+    });
     expect(iterator.peek()).toBe("+");
   });
 
@@ -103,6 +165,10 @@ describe("Token.makeString", () => {
     const token = result as Token;
     expect(token.type).toBe(TokenType.STRING);
     expect(token.value).toBe('"a b c"');
+    expect(token.loc).toEqual({
+      start: { line: 1, column: 0, index: 0 },
+      end: { line: 1, column: 7, index: 7 },
+    });
     expect(iterator.peek()).toBe(")");
   });
 });
@@ -115,7 +181,17 @@ describe("Token.makeOperator", () => {
     const token = result as Token;
     expect(token.type).toBe(TokenType.OPERATOR);
     expect(token.value).toBe("*");
-    expect(iterator.peek()).toBe("a");
+    expect(token.loc).toEqual({
+      start: { line: 1, column: 0, index: 0 },
+      end: { line: 1, column: 1, index: 1 },
+    });
+    expect(iterator.peek()).toEqual({
+      value: "a",
+      loc: {
+        start: { line: 1, column: 1, index: 1 },
+        end: { line: 1, column: 2, index: 2 },
+      },
+    });
   });
 
   it("可以解析带等号的双字符运算符", () => {
@@ -125,6 +201,10 @@ describe("Token.makeOperator", () => {
     const token = result as Token;
     expect(token.type).toBe(TokenType.OPERATOR);
     expect(token.value).toBe(">=");
+    expect(token.loc).toEqual({
+      start: { line: 1, column: 0, index: 0 },
+      end: { line: 1, column: 2, index: 2 },
+    });
     expect(iterator.peek()).toBe("x");
   });
 
@@ -135,6 +215,10 @@ describe("Token.makeOperator", () => {
     const token = result as Token;
     expect(token.type).toBe(TokenType.OPERATOR);
     expect(token.value).toBe("==");
+    expect(token.loc).toEqual({
+      start: { line: 1, column: 0, index: 0 },
+      end: { line: 1, column: 2, index: 2 },
+    });
     expect(iterator.peek()).toBe("b");
   });
 
@@ -145,6 +229,10 @@ describe("Token.makeOperator", () => {
     const token = result as Token;
     expect(token.type).toBe(TokenType.OPERATOR);
     expect(token.value).toBe("++");
+    expect(token.loc).toEqual({
+      start: { line: 1, column: 0, index: 0 },
+      end: { line: 1, column: 2, index: 2 },
+    });
     expect(iterator.peek()).toBe("c");
   });
 });
@@ -157,7 +245,17 @@ describe("Token.makeVariableOrKeyword", () => {
     const token = result as Token;
     expect(token.type).toBe(TokenType.VARIABLE);
     expect(token.value).toBe("a");
-    expect(iterator.peek()).toBe(" ");
+    expect(token.loc).toEqual({
+      start: { line: 1, column: 0, index: 0 },
+      end: { line: 1, column: 1, index: 1 },
+    });
+    expect(iterator.peek()).toEqual({
+      value: " ",
+      loc: {
+        start: { line: 1, column: 1, index: 1 },
+        end: { line: 1, column: 2, index: 2 },
+      },
+    });
   });
 
   it("可以解析多字符变量名", () => {
@@ -167,7 +265,17 @@ describe("Token.makeVariableOrKeyword", () => {
     const token = result as Token;
     expect(token.type).toBe(TokenType.VARIABLE);
     expect(token.value).toBe("abc");
-    expect(iterator.peek()).toBe(" ");
+    expect(token.loc).toEqual({
+      start: { line: 1, column: 0, index: 0 },
+      end: { line: 1, column: 3, index: 3 },
+    });
+    expect(iterator.peek()).toEqual({
+      value: " ",
+      loc: {
+        start: { line: 1, column: 3, index: 3 },
+        end: { line: 1, column: 4, index: 4 },
+      },
+    });
   });
 
   it("可以解析包含下划线与数字的变量名", () => {
@@ -177,7 +285,17 @@ describe("Token.makeVariableOrKeyword", () => {
     const token = result as Token;
     expect(token.type).toBe(TokenType.VARIABLE);
     expect(token.value).toBe("_a1");
-    expect(iterator.peek()).toBe("+");
+    expect(token.loc).toEqual({
+      start: { line: 1, column: 0, index: 0 },
+      end: { line: 1, column: 3, index: 3 },
+    });
+    expect(iterator.peek()).toEqual({
+      value: "+",
+      loc: {
+        start: { line: 1, column: 3, index: 3 },
+        end: { line: 1, column: 4, index: 4 },
+      },
+    });
   });
 
   it("可以识别关键字", () => {
@@ -187,7 +305,17 @@ describe("Token.makeVariableOrKeyword", () => {
     const token = result as Token;
     expect(token.type).toBe(TokenType.KEYWORD);
     expect(token.value).toBe(KEYWORD_TYPE.IF);
-    expect(iterator.peek()).toBe("(");
+    expect(token.loc).toEqual({
+      start: { line: 1, column: 0, index: 0 },
+      end: { line: 1, column: 2, index: 2 },
+    });
+    expect(iterator.peek()).toEqual({
+      value: "(",
+      loc: {
+        start: { line: 1, column: 2, index: 2 },
+        end: { line: 1, column: 3, index: 3 },
+      },
+    });
   });
 
   it("首字符不合法会抛错", () => {
