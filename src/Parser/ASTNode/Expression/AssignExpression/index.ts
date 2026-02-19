@@ -4,6 +4,7 @@ import { ASTNODE_TYPE } from "../../../consts";
 import PeekTokenIterator from "../../../PeekTokenIterator";
 import Expression from "..";
 import Factor from "../../Factor";
+import Token from "../../../../Lexer/Token";
 
 class AssignExpression extends ASTNode {
   constructor({ label }: ASTNodeProps) {
@@ -21,7 +22,7 @@ class AssignExpression extends ASTNode {
     //
     const factor = Factor.parse(iterator);
     if (!factor) throw new Error(`Unexpected Factor: ${variabel}`);
-    assign.lexme = iterator.nextTokenMatchByValue("=");
+    assign.lexme = iterator.nextTokenMatchByValue("=") as Token;
     //
     const expression = Expression.parse(iterator);
     assign.addChild(factor);

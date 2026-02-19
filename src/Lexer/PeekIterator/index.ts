@@ -22,7 +22,7 @@ class PeekIterator<T = string> {
     this.location = { line: 1, column: 0, index: 0 };
   }
   // 查看将要迭代吃掉的下一个元素
-  peek(): T {
+  peek(): T | "EOF" {
     if (this.peekedQueue.length) {
       return this.peekedQueue[this.peekedQueue.length - 1];
     }
@@ -31,7 +31,7 @@ class PeekIterator<T = string> {
     return char;
   }
   // 迭代吃掉下一个元素
-  next(): T {
+  next(): T | "EOF" {
     let value = undefined;
     // 优先消耗之前peek的时候调用next保存的值
     if (this.peekedQueue.length) {

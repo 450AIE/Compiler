@@ -72,7 +72,7 @@ class Expression extends ASTNode {
     while (true) {
       // 获取操作符
       const operatorToken = iterator.peek();
-      if (operatorToken?.getValue() === TokenType.EOF) break;
+      if (operatorToken === TokenType.EOF) break;
       const op = operatorToken.getValue();
       // 暂时只支持二元计算，并且操作符需要是一个节点，才可以将左右操作数addChild
       const opASTNode = new Expression({ label: op, lexme: operatorToken, type: ASTNODE_TYPE.BINARY_OPERATOR });
