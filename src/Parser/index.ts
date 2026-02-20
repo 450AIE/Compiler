@@ -1,8 +1,8 @@
 import { TokenType } from "../Lexer/consts";
 import Token from "../Lexer/Token";
 import PeekTokenIterator from "./PeekTokenIterator";
-import "./ASTNode/registry";
-import Program from "./ASTNode/Program";
+import "./ASTNode/ESTree/registry";
+import Program from "./ASTNode/ESTree/Programs/Program";
 
 /**
  * 语法解析器

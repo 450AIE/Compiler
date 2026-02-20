@@ -1,0 +1,121 @@
+import ASTNode, { ASTNodeProps } from "../../NodeObjects/Node";
+import { TokenType } from "../../../../../Lexer/consts";
+import Token from "../../../../../Lexer/Token";
+import { ASTNODE_TYPE, OPERATOR_BINDING_POWER } from "../../../../consts";
+import PeekTokenIterator from "../../../../PeekTokenIterator";
+import Factor from "../../NodeObjects/Factor";
+
+let AssignExpression: any;
+let ArrayExpression: any;
+let ObjectExpression: any;
+let FunctionCallStatement: any;
+
+const setAssignExpression = (value: any) => {
+  AssignExpression = value;
+};
+
+const setArrayExpression = (value: any) => {
+  ArrayExpression = value;
+};
+
+const setObjectExpression = (value: any) => {
+  ObjectExpression = value;
+};
+
+const setFunctionCallStatement = (value: any) => {
+  FunctionCallStatement = value;
+};
+
+class Expression extends ASTNode {
+  constructor({ label, type }: ASTNodeProps) {
+    super({
+      type: type ?? ASTNODE_TYPE.EXPRESSION,
+      label,
+    });
+  }
+  /**
+   * 数组，对象，复杂表达式的赋值都在这里
+   */
+  static parse(iterator: PeekTokenIterator) {
+    const expression = new Expression({ label: null });
+    const token = iterator.next() as Token;
+    const lookahead = iterator.peek() as Token;
+    const value = token.getValue();
+    const type = token.getType();
+    // 赋值语句
+    if (type === TokenType.VARIABLE && lookahead?.getValue() === "=") {
+      iterator.unget();
+      return AssignExpression.parse(iterator);
+      // 函数声明
+    } else if (type === TokenType.VARIABLE && lookahead?.getValue() === "(") {
+      iterator.unget();
+      return FunctionCallStatement.parse(iterator);
+      // 数组声明
+    } else if (type === TokenType.BRACKET && value === "[") {
+      iterator.unget();
+      return ArrayExpression.parse(iterator);
+    } else if (type === TokenType.BRACKET && value === "{") {
+      iterator.unget();
+      return ObjectExpression.parse(iterator);
+    }
+    iterator.unget();
+    // 上述情况都不是的时候，就代表是计算的表达式
+    const root = Expression.prattParse(iterator, 0);
+    expression.addChild(root);
+    return expression;
+  }
+  /**
+   * prattParse算法，解析表达式。看不懂的话自己举例 a + b * 2 * c + a / 4
+   */
+  private static prattParse(iterator: PeekTokenIterator, prevBindingPower: number) {
+    // 左侧操作数，即 a + expression中的a，有可能是括号
+    let leftNumToken = iterator.next() as Token;
+    let leftNumFactorNode = Factor.parseToken(leftNumToken);
+    const type = leftNumToken.getType();
+    const value = leftNumToken.getValue();
+    // 遇到左括号需要特殊处理，括号内的空间单独处理完毕后，作为leftNumFactorNode
+    if (type === TokenType.BRACKET && value === "(") {
+      leftNumFactorNode = Expression.prattParse(iterator, 0);
+      // 下面while内遇到）直接break了，所以这里next消费掉是）或者EOF，如果是EOF，那么就缺失右括号
+      const closingToken = iterator.next() as Token;
+      if (closingToken?.getValue() !== ")") throw new Error(`Unexpected Token: 缺失右侧括号`);
+    }
+    // 这个算法只是根据运算优先级拼出AST，至于节点之间是否可以计算（比如string * string），那是后续虚拟机解释执行检查的
+    // @ts-expect-error
+    if (![TokenType.VARIABLE, TokenType.BRACKET].includes(type) && !Token.isScalar(type)) {
+      throw new Error(`Unexpected Token: ${leftNumToken}`);
+    }
+    while (true) {
+      // 获取操作符
+      const operatorToken = iterator.peek();
+      if (operatorToken === TokenType.EOF) break;
+      const op = operatorToken.getValue();
+      // 暂时只支持二元计算，并且操作符需要是一个节点，才可以将左右操作数addChild
+      const opASTNode = new Expression({ label: op, lexme: operatorToken, type: ASTNODE_TYPE.BINARY_OPERATOR });
+      // 这个不是运算符
+      if (operatorToken.getType() !== TokenType.OPERATOR) break;
+      // 没有结合力，代表没有收录这个运算符
+      if (!OPERATOR_BINDING_POWER[op]) throw new Error(`暂未支持该运算符: ${op}`);
+      // 获取该运算符的左右结合力
+      const [leftPower, rightPower] = OPERATOR_BINDING_POWER[op];
+      // 对于 1 + 3 * 2，这里如果leftNumToken是3的话，那么传递的形参prevBindingPower就是3前面的+的右结合力11，leftPower
+      // 就是3后面的*的左结合力20，谁更大，3就跟谁走，如果前面更大，就break掉直接把3给return出去。这个意思
+      if (leftPower < prevBindingPower) break;
+      // 消费掉这个运算符
+      iterator.next();
+      const rightNumNode = Expression.prattParse(iterator, rightPower);
+      // 拼接为AST
+      opASTNode.addChild(leftNumFactorNode);
+      opASTNode.addChild(rightNumNode);
+      /**
+       * 在while中的话，每次这个leftNumFactorNode都变为了opASTNode，所以在break后return出去，外面的Expression.prattParse递归接收到的
+       * 是opASTNode，即rightNumNode也是操作符节点，所以没问题。看不懂的话自己举例 a + b * 2 * c + a / 4
+       */
+      leftNumFactorNode = opASTNode;
+    }
+    return leftNumFactorNode;
+  }
+}
+
+export default Expression;
+export { setAssignExpression, setArrayExpression, setObjectExpression, setFunctionCallStatement };
