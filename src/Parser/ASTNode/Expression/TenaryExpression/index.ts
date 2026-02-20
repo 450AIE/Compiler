@@ -1,10 +1,9 @@
 import Expression from "..";
-import ASTNode from "../..";
 import { ASTNodeProps } from "../..";
 import { ASTNODE_TYPE } from "../../../consts";
 import PeekTokenIterator from "../../../PeekTokenIterator";
 
-class TenaryExpression extends ASTNode {
+class TenaryExpression extends Expression {
   constructor({ label }: ASTNodeProps) {
     super({
       type: ASTNODE_TYPE.Tenary_Expression,

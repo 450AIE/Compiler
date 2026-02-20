@@ -1,11 +1,11 @@
 import Expression from "..";
-import ASTNode, { ASTNodeProps } from "../..";
+import { ASTNodeProps } from "../..";
 import Token from "../../../../Lexer/Token";
 import { ASTNODE_TYPE } from "../../../consts";
 import PeekTokenIterator from "../../../PeekTokenIterator";
 import Factor from "../../Factor";
 
-class ObjectExpression extends ASTNode {
+class ObjectExpression extends Expression {
   constructor({ label, type }: ASTNodeProps) {
     super({
       type: type ?? ASTNODE_TYPE.OBJECT_EXPRESSION,

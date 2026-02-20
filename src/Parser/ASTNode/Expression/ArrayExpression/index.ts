@@ -1,10 +1,10 @@
 import Expression from "..";
-import ASTNode, { ASTNodeProps } from "../..";
+import { ASTNodeProps } from "../..";
 import Token from "../../../../Lexer/Token";
 import { ASTNODE_TYPE } from "../../../consts";
 import PeekTokenIterator from "../../../PeekTokenIterator";
 
-class ArrayExpression extends ASTNode {
+class ArrayExpression extends Expression {
   constructor({ label, type }: ASTNodeProps) {
     super({
       type: type ?? ASTNODE_TYPE.ARRAY_EXPRESSION,

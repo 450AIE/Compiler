@@ -4,6 +4,7 @@ import Token from "../../../../Lexer/Token";
 import PeekTokenIterator from "../../../PeekTokenIterator";
 import { ASTNODE_TYPE } from "../../../consts";
 import Expression from "..";
+import "../../registry";
 
 const makeToken = (type: TokenType, value: string) =>
   new Token({

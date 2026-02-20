@@ -5,6 +5,7 @@ import PeekTokenIterator from "../../../PeekTokenIterator";
 import IfStatement from "../IfStatement";
 import Statement from "..";
 import AssignExpression from "../../Expression/AssignExpression";
+import "../../registry";
 
 const makeToken = (type: TokenType, value: string) =>
   new Token({

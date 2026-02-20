@@ -62,6 +62,10 @@ export const KEYWORD_TYPE = {
   VOID: "void",
   TYPEOF: "typeof",
   INSTANCEOF: "instanceof",
+  IMPORT: "import",
+  EXPORT: "export",
+  DEFAULT: "default",
+  USING: "using",
 } as const;
 
 export type KEYWORD_TYPE = (typeof KEYWORD_TYPE)[keyof typeof KEYWORD_TYPE];

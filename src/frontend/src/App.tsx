@@ -31,7 +31,14 @@ const toAstView = (node: any): AstView => {
     return { type: "NULL", label: null, lexme: null, children: [] };
   }
   const lexme = node.getLexeme?.() ?? node.getLexme?.() ?? null;
-  const children = node.getChildren?.() ?? node.children ?? [];
+  const directChildren = node.getChildren?.() ?? node.children ?? [];
+  const bodyChildren = node.body ?? [];
+  const children =
+    Array.isArray(directChildren) && directChildren.length > 0
+      ? directChildren
+      : Array.isArray(bodyChildren)
+      ? bodyChildren
+      : [];
   return {
     type: node.getType?.(),
     label: node.getLabel?.() ?? null,

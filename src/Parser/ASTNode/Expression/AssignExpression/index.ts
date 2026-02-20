@@ -1,4 +1,3 @@
-import ASTNode from "../..";
 import { ASTNodeProps } from "../..";
 import { ASTNODE_TYPE } from "../../../consts";
 import PeekTokenIterator from "../../../PeekTokenIterator";
@@ -6,7 +5,7 @@ import Expression from "..";
 import Factor from "../../Factor";
 import Token from "../../../../Lexer/Token";
 
-class AssignExpression extends ASTNode {
+class AssignExpression extends Expression {
   constructor({ label }: ASTNodeProps) {
     super({
       type: ASTNODE_TYPE.ASSIGN_EXPRESSION,

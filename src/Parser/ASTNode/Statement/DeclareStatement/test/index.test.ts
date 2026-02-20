@@ -5,6 +5,7 @@ import PeekTokenIterator from "../../../../PeekTokenIterator";
 import { ASTNODE_TYPE } from "../../../../consts";
 import DeclareStatement from "..";
 import Statement from "../..";
+import "../../../registry";
 
 const makeToken = (type: TokenType, value: string) =>
   new Token({

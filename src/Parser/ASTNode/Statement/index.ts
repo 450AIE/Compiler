@@ -5,12 +5,37 @@ import { KEYWORD_TYPE, TokenType } from "../../../Lexer/consts";
 import Token from "../../../Lexer/Token";
 import PeekTokenIterator from "../../PeekTokenIterator";
 import Expression from "../Expression";
-import DeclareStatement from "./DeclareStatement";
-import ForStatement from "./ForStatement";
-import FunctionDeclareStatement from "./FunctionStatement";
-import IfStatement from "./IfStatement";
-import ReturnStatement from "./ReturnStatement";
-import WhileStatement from "./WhileStatement";
+
+let DeclareStatement: any;
+let ForStatement: any;
+let FunctionDeclareStatement: any;
+let IfStatement: any;
+let ReturnStatement: any;
+let WhileStatement: any;
+
+const setDeclareStatement = (value: any) => {
+  DeclareStatement = value;
+};
+
+const setForStatement = (value: any) => {
+  ForStatement = value;
+};
+
+const setFunctionDeclareStatement = (value: any) => {
+  FunctionDeclareStatement = value;
+};
+
+const setIfStatement = (value: any) => {
+  IfStatement = value;
+};
+
+const setReturnStatement = (value: any) => {
+  ReturnStatement = value;
+};
+
+const setWhileStatement = (value: any) => {
+  WhileStatement = value;
+};
 
 /**
  * Statement是语句的含义，这个应该设计为抽象类
@@ -83,3 +108,11 @@ class Statement extends ASTNode {
 }
 
 export default Statement;
+export {
+  setDeclareStatement,
+  setForStatement,
+  setFunctionDeclareStatement,
+  setIfStatement,
+  setReturnStatement,
+  setWhileStatement,
+};

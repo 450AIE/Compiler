@@ -4,11 +4,27 @@ import Token from "../../../Lexer/Token";
 import { ASTNODE_TYPE, OPERATOR_BINDING_POWER } from "../../consts";
 import PeekTokenIterator from "../../PeekTokenIterator";
 import Factor from "../Factor";
-import FunctionCallStatement from "../Statement/FunctionStatement/FunctionCall";
-import ArrayExpression from "./ArrayExpression";
-import AssignExpression from "./AssignExpression";
-import ObjectExpression from "./ObjectExpression";
-import TenaryExpression from "./TenaryExpression";
+
+let AssignExpression: any;
+let ArrayExpression: any;
+let ObjectExpression: any;
+let FunctionCallStatement: any;
+
+const setAssignExpression = (value: any) => {
+  AssignExpression = value;
+};
+
+const setArrayExpression = (value: any) => {
+  ArrayExpression = value;
+};
+
+const setObjectExpression = (value: any) => {
+  ObjectExpression = value;
+};
+
+const setFunctionCallStatement = (value: any) => {
+  FunctionCallStatement = value;
+};
 
 class Expression extends ASTNode {
   constructor({ label, type }: ASTNodeProps) {
@@ -102,3 +118,4 @@ class Expression extends ASTNode {
 }
 
 export default Expression;
+export { setAssignExpression, setArrayExpression, setObjectExpression, setFunctionCallStatement };
